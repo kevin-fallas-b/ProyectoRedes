@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -90,7 +91,7 @@ public class FlowController {
     public void goMain() {
         try {
             this.mainStage.setResizable(false);
-            this.mainStage.getIcons().add(new Image("sistematransporte/resources/icono.png"));
+            this.mainStage.getIcons().add(new Image("proyectoredes/resources/icon.png"));
             this.mainStage.setScene(new Scene(FXMLLoader.load(ProyectoRedes.class.getResource("view/PantPrincipal.fxml"), this.idioma)));
             this.mainStage.show();
         } catch (IOException ex) {
@@ -118,8 +119,8 @@ public class FlowController {
         }
         switch (location) {
             case "Center":
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().clear();
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().add(loader.getRoot());
+                ((AnchorPane) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().clear();
+                ((AnchorPane) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().add(loader.getRoot());
                 break;
             case "Top":
                 break;
@@ -146,8 +147,8 @@ public class FlowController {
         Controller controller = loader.getController();
         controller.initialize();
         Stage stage = new Stage();
-        //stage.getIcons().add(new Image("sistematransporte/resources/icono.png"));
-        stage.setTitle("Sistema Transporte");
+        stage.getIcons().add(new Image("proyectoredes/resources/icon.png"));
+        stage.setTitle("Envio de imagenes");
         stage.setOnHidden((WindowEvent event) -> {
             controller.getStage().getScene().setRoot(new Pane());
             controller.setStage(null);
@@ -213,5 +214,8 @@ public class FlowController {
         stage.setScene(sceneToGo);
         stage.show();
     }
-
+    
+    public void goViewSubScene(String scene){
+        
+    }
 }

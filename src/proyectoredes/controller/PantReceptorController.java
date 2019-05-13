@@ -5,25 +5,16 @@
  */
 package proyectoredes.controller;
 
-import com.jfoenix.controls.JFXButton;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import proyectoredes.util.FlowController;
 
 /**
  * FXML Controller class
  *
  * @author Kevin F
  */
-public class PantPrincipalController extends Controller implements Initializable {
-
-    @FXML
-    private JFXButton bot_Emisor;
-    @FXML
-    private JFXButton bot_Receptor;
+public class PantReceptorController extends Controller implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -36,16 +27,6 @@ public class PantPrincipalController extends Controller implements Initializable
     @Override
     public void initialize() {
     
-    }
-
-    @FXML
-    private void presionarBotEmisor(ActionEvent event) {
-        FlowController.getInstance().goView("PantEmisor");
-    }
-
-    @FXML
-    private void presionarBotReceptor(ActionEvent event) {
-        FlowController.getInstance().goView("PantReceptor");
     }
     
 }

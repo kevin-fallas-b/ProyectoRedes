@@ -18,7 +18,8 @@ public class ProyectoRedes extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FlowController.getInstance().InitializeFlow(stage, null);
-        FlowController.getInstance().goViewInWindow("PantPrincipal");
+        FlowController.getInstance().goMain();
+        FlowController.getInstance().goView("PantEmisor");
     }
 
     /**
