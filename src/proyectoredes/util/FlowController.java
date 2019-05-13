@@ -99,6 +99,9 @@ public class FlowController {
         }
     }
 
+    public Stage getMain(){
+        return this.mainStage;
+    }
     public void goView(String viewName) {
         goView(viewName, "Center", null);
     }
