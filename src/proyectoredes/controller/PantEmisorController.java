@@ -25,6 +25,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import proyectoredes.model.CapaAplicacion;
+import proyectoredes.model.CapaTransporte;
 import proyectoredes.util.FlowController;
 import proyectoredes.util.Formato;
 import proyectoredes.util.Mensaje;
@@ -75,6 +77,7 @@ public class PantEmisorController extends Controller implements Initializable {
     private SimpleStringProperty cantColumnasProperty = new SimpleStringProperty("1");
     private SimpleStringProperty tamSegmentosProperty = new SimpleStringProperty("100");
     private FileChooser fileChooser = new FileChooser();
+    private File imagenEnFile;
     @FXML
     private AnchorPane ap_PantEmisor;
     private List<Line> lineas = new ArrayList();
@@ -113,16 +116,12 @@ public class PantEmisorController extends Controller implements Initializable {
 
     @FXML
     private void presionarBotEscogerImagen(ActionEvent event) {
-        File file = fileChooser.showOpenDialog(FlowController.getInstance().getMain());
-        if (file != null) {
-            imagenAEnviar = new Image(file.toURI().toString());
+        imagenEnFile = fileChooser.showOpenDialog(FlowController.getInstance().getMain());
+        if (imagenEnFile != null) {
+            imagenAEnviar = new Image(imagenEnFile.toURI().toString());
             iv_imagenAEnviar.setImage(imagenAEnviar);
             aspectRatio = imagenAEnviar.getWidth() / imagenAEnviar.getHeight();
-            if (lineas != null) {
-                ap_PantEmisor.getChildren().removeAll(lineas);
-                ap_PantEmisor.getChildren().removeAll(numeros);
-            }
-
+            graficarImagen();
         }
 
     }
@@ -164,9 +163,9 @@ public class PantEmisorController extends Controller implements Initializable {
         Integer cantColumnas = Integer.parseInt(cantColumnasProperty.getValue());
         Integer cantFilas = Integer.parseInt(cantFilasProperty.getValue());
         Integer tamSegmento = Integer.parseInt(tamSegmentosProperty.getValue());
-        graficarImagen();
         if (new Mensaje().showConfirmation("Confirmar Envio.", FlowController.getInstance().getMain().getOwner(), "Por favor confirmar los datos.\nCantidad de Filas: " + cantFilas + "\nCantidad de Columnas: " + cantColumnas + "\nProtocolo: " + TG_TipoEnvio.getSelectedToggle().getUserData() + "\nTamaño de segmento: " + tamSegmento + " " + tg_TamSegmento.getSelectedToggle().getUserData())) {
             //hacer envio
+            intentarEnvio();
         }
 
     }
@@ -223,6 +222,12 @@ public class PantEmisorController extends Controller implements Initializable {
                 cont++;
             }
         }
+        
     }
     
+    private void intentarEnvio(){
+        
+        CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
+        CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos());
+    }
 }
