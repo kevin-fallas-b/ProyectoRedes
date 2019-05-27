@@ -8,12 +8,14 @@ package proyectoredes.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -83,6 +85,8 @@ public class PantEmisorController extends Controller implements Initializable {
     private List<Line> lineas = new ArrayList();
     private List<Text> numeros = new ArrayList();
     private Double aspectRatio = 0.0;
+    private Double realWidth;
+    private Double realHeight;
 
     /**
      * Initializes the controller class.
@@ -121,6 +125,8 @@ public class PantEmisorController extends Controller implements Initializable {
             imagenAEnviar = new Image(imagenEnFile.toURI().toString());
             iv_imagenAEnviar.setImage(imagenAEnviar);
             aspectRatio = imagenAEnviar.getWidth() / imagenAEnviar.getHeight();
+            realWidth = Math.min(iv_imagenAEnviar.getFitWidth(), iv_imagenAEnviar.getFitHeight() * aspectRatio);
+            realHeight = Math.min(iv_imagenAEnviar.getFitHeight(), iv_imagenAEnviar.getFitWidth() / aspectRatio);
             graficarImagen();
         }
 
@@ -171,63 +177,64 @@ public class PantEmisorController extends Controller implements Initializable {
     }
 
     private void graficarImagen() {
-        //primero que nada quitar cualquier linea ya en pantalla
-        ap_PantEmisor.getChildren().removeAll(lineas);
-        ap_PantEmisor.getChildren().removeAll(numeros);
-        //agarro datos de la imagen
-        /*
+        if (imagenEnFile != null) {
+
+            //primero que nada quitar cualquier linea ya en pantalla
+            ap_PantEmisor.getChildren().removeAll(lineas);
+            ap_PantEmisor.getChildren().removeAll(numeros);
+            //agarro datos de la imagen
+            /*
         tenia problemas ya que getfitHeight regresa el tamano del imageview no de la foto, 
         entonces este metodo utilizando el aspectRatio lo saque de y los Realheight y realwidth
         https://stackoverflow.com/questions/39408845/how-to-get-width-height-of-displayed-image-in-javafx-imageview
         el resto de algoritmo si es idea mia. - Kevin
-        */
-        Double xInicio = iv_imagenAEnviar.getLayoutX();
-        Double realWidth = Math.min(iv_imagenAEnviar.getFitWidth(), iv_imagenAEnviar.getFitHeight() * aspectRatio);
-        Double xFinal = xInicio + realWidth;
-        Double yInicio = iv_imagenAEnviar.getLayoutY();
-        Double realHeight = Math.min(iv_imagenAEnviar.getFitHeight(), iv_imagenAEnviar.getFitWidth() / aspectRatio);
-        Double yFinal = yInicio + realHeight;
+             */
+            Double xInicio = iv_imagenAEnviar.getLayoutX();
+            Double xFinal = xInicio + realWidth;
+            Double yInicio = iv_imagenAEnviar.getLayoutY();
+            Double yFinal = yInicio + realHeight;
+            //primero hacemos las columnas
+            Integer cantColumnas = Integer.parseInt(cantColumnasProperty.getValue());
+            Double cantAumentarEnX = realWidth / cantColumnas;
+            for (int i = 1; i < cantColumnas; i++) {
+                //dibujar una raya en xinicio+cantAumentarenX*i 
+                Line line = new Line(xInicio + (cantAumentarEnX * i), yInicio, xInicio + (cantAumentarEnX * i), yFinal);
+                lineas.add(line);
+                ap_PantEmisor.getChildren().add(line);
+            }
 
-        //primero hacemos las columnas
-        Integer cantColumnas = Integer.parseInt(cantColumnasProperty.getValue());
-        Double cantAumentarEnX = realWidth / cantColumnas;
-        for (int i = 1; i < cantColumnas; i++) {
-            //dibujar una raya en xinicio+cantAumentarenX*i 
-            Line line = new Line(xInicio + (cantAumentarEnX * i), yInicio, xInicio + (cantAumentarEnX * i), yFinal);
-            lineas.add(line);
-            ap_PantEmisor.getChildren().add(line);
-        }
+            //vamos con las filas, es lo mismo pero diferente
+            Integer cantFilas = Integer.parseInt(cantFilasProperty.getValue());
+            Double cantAumentarEnY = realHeight / cantFilas;
+            for (int k = 1; k < cantFilas; k++) {
+                //dibujar una raya en yinicio+cantAumentareny*k 
+                Line line = new Line(xInicio, yInicio + (cantAumentarEnY * k), xFinal, yInicio + (cantAumentarEnY * k));
+                lineas.add(line);
+                ap_PantEmisor.getChildren().add(line);
+            }
 
-        //vamos con las filas, es lo mismo pero diferente
-        Integer cantFilas = Integer.parseInt(cantFilasProperty.getValue());
-        Double cantAumentarEnY = realHeight / cantFilas;
-        for (int k = 1; k < cantFilas; k++) {
-            //dibujar una raya en yinicio+cantAumentareny*k 
-            Line line = new Line(xInicio, yInicio + (cantAumentarEnY * k), xFinal, yInicio + (cantAumentarEnY * k));
-            lineas.add(line);
-            ap_PantEmisor.getChildren().add(line);
-        }
-        
-        //le agregamos los numeros a cada cuadro, buscamos intersecciones basicamente 
-        Integer cont=1;
-        for(int j=1;j<=cantFilas;j++){
-            for(int x=1;x<=cantColumnas;x++){
-                //poner cont en y=(yinicio+(aumentarEnY*j))-5 x=(xInicio+(aumentarEnX*x))-5.... el -5 es para que no lo ponga en la pura interseccion
-                Text text = new Text(cont.toString());
-                text.setLayoutX((xInicio+(cantAumentarEnX*x))-15);
-                text.setLayoutY((yInicio+(cantAumentarEnY*j))-10);
-                text.setFill(Paint.valueOf("FF0000"));
-                numeros.add(text);
-                ap_PantEmisor.getChildren().add(text);
-                cont++;
+            //le agregamos los numeros a cada cuadro, buscamos intersecciones basicamente 
+            Integer cont = 1;
+            for (int j = 1; j <= cantFilas; j++) {
+                for (int x = 1; x <= cantColumnas; x++) {
+                    //poner cont en y=(yinicio+(aumentarEnY*j))-5 x=(xInicio+(aumentarEnX*x))-5.... el -5 es para que no lo ponga en la pura interseccion
+                    Text text = new Text(cont.toString());
+                    text.setLayoutX((xInicio + (cantAumentarEnX * x)) - 15);
+                    text.setLayoutY((yInicio + (cantAumentarEnY * j)) - 10);
+                    text.setFill(Paint.valueOf("FF0000"));
+                    numeros.add(text);
+                    ap_PantEmisor.getChildren().add(text);
+                    cont++;
+                }
             }
         }
-        
+
     }
-    
-    private void intentarEnvio(){
-        
+
+    private void intentarEnvio() {
+
         CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
         CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos());
     }
+
 }

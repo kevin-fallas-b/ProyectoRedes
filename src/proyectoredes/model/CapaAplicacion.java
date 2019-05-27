@@ -12,7 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.image.Image;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
 /**
@@ -21,26 +26,45 @@ import javax.imageio.ImageIO;
  */
 public class CapaAplicacion {
     //esta clase define como trabaja el protocolo KF
-    
+
     Integer cantFilas;
     Integer cantColumnas;
     List<BufferedImage> listaSegmentos;//esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
     BufferedImage imagenOriginal;
-    
-    public CapaAplicacion(){
-        this.cantFilas=0;
-        this.cantColumnas=0;
+    VBox apCentro = new VBox();
+    HBox hboxes[] = new HBox[3];
+
+    public CapaAplicacion() {
+        this.cantFilas = 0;
+        this.cantColumnas = 0;
     }
-    
-    public CapaAplicacion(Integer cantFil, Integer cantCol, File pathImagen){
+
+    public CapaAplicacion(Integer cantFil, Integer cantCol, File pathImagen) {
         this.cantFilas = cantFil;
         this.cantColumnas = cantCol;
         this.listaSegmentos = new ArrayList<BufferedImage>();
         try {
             this.imagenOriginal = ImageIO.read(pathImagen);
+            System.out.println("width: " + imagenOriginal.getWidth() + "  Height: " + imagenOriginal.getHeight());
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //probarImagen();
+    }
+
+    private void probarImagen() {
+        Stage stage = new Stage();
+        Scene scene = new Scene(apCentro);
+        apCentro.setSpacing(10.00);
+        stage.setScene(scene);
+        stage.show();
+        hboxes[0] = new HBox();
+        hboxes[1] = new HBox();
+        hboxes[2] = new HBox();
+        hboxes[0].setSpacing(10.00);
+        hboxes[1].setSpacing(10.00);
+        hboxes[2].setSpacing(10.00);
+        apCentro.getChildren().addAll(hboxes);
     }
 
     public Integer getCantFilas() {
@@ -60,6 +84,7 @@ public class CapaAplicacion {
     }
 
     public List<BufferedImage> getListaSegmentos() {
+        segmentarImagen();
         return listaSegmentos;
     }
 
@@ -67,20 +92,27 @@ public class CapaAplicacion {
         this.listaSegmentos = listaSegmentos;
     }
 
-    
-    private void segmentarImagen(){
+    private void segmentarImagen() {
+        
         //calculamos la cantidad de pixeles que hay que avanzar entre cada imagen
-        Integer aumentoEnX= (int)imagenOriginal.getWidth()/cantColumnas;
-        Integer aumentoEnY= (int)imagenOriginal.getHeight()/cantFilas;
+        Integer aumentoEnX = imagenOriginal.getWidth() / cantColumnas;
+        Integer aumentoEnY = imagenOriginal.getHeight() / cantFilas;
         listaSegmentos.clear();
-        for(int i=0;i<cantFilas;i++){
-            for(int k=0;k<cantColumnas;k++){
-                //segmentar
-                BufferedImage imagen = imagenOriginal.getSubimage(0, 0, aumentoEnX, aumentoEnY);
-                
-                //listaSegmentos.add()
+        Integer posX = 0;
+        Integer posY = 0;
+        for (int i = 1; i <= cantFilas; i++) {
+            for (int k = 1; k <= cantColumnas; k++) {
+                BufferedImage imagen = imagenOriginal.getSubimage(posX, posY, aumentoEnX, aumentoEnY);
+                ImageView imageview = new ImageView(SwingFXUtils.toFXImage(imagen, null));
+                hboxes[i-1].getChildren().add(imageview);
+                listaSegmentos.add(imagen);
+                posX += aumentoEnX;
+
             }
+            posX = 0;
+            posY += aumentoEnY;
         }
+
     }
-  
+
 }
