@@ -4,6 +4,8 @@
 <?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -11,32 +13,43 @@
 
 <AnchorPane id="AnchorPane" fx:id="ap_PantEmisor" maxHeight="540.0" maxWidth="1000.0" minHeight="540.0" minWidth="1000.0" prefHeight="540.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoredes.controller.PantEmisorController">
    <children>
+      <AnchorPane fx:id="apDireccionesIP" layoutX="511.0" layoutY="327.0" prefHeight="200.0" prefWidth="399.0">
+         <children>
+            <TableView fx:id="TbDireccionesAEnviar" prefHeight="200.0" prefWidth="146.0">
+              <columns>
+                <TableColumn fx:id="tcDireccionesIP" prefWidth="145.0" text="Direcciones IP" />
+              </columns>
+            </TableView>
+            <JFXTextField fx:id="txfAgregarDireccionIP" layoutX="156.0" layoutY="51.0" />
+            <JFXButton fx:id="btnAgregarDireccionIP" layoutX="301.0" layoutY="51.0" onAction="#presionarAgregarDireccionIP" text="Agregar" />
+         </children>
+      </AnchorPane>
       <JFXButton fx:id="bot_EscogerImagen" layoutX="710.0" layoutY="81.0" onAction="#presionarBotEscogerImagen" prefHeight="25.0" prefWidth="101.0" text="Escoger Imagen" />
       <Separator layoutX="500.0" layoutY="-10.0" orientation="VERTICAL" prefHeight="540.0" prefWidth="3.0" />
-      <JFXTextField fx:id="tf_FilasFragmentos" labelFloat="true" layoutX="537.0" layoutY="205.0" promptText="Filas" />
-      <JFXTextField fx:id="tf_ColumnasFragmentos" labelFloat="true" layoutX="803.0" layoutY="204.0" promptText="Columnas" />
-      <JFXButton fx:id="bot_AumentarFilas" layoutX="676.0" layoutY="215.0" onAction="#presionarBotAumentarFilas" text="↑" />
-      <JFXButton fx:id="bot_DisminuirFilas" layoutX="712.0" layoutY="215.0" onAction="#presionarBotDisminuirFilas" text="↓" />
-      <JFXButton fx:id="bot_AumentarColumnas" layoutX="952.0" layoutY="205.0" onAction="#presionarBotAumentarColumnas" text="↑" />
-      <JFXButton fx:id="Bot_DisminuirColumnas" layoutX="977.0" layoutY="205.0" onAction="#presionarBotDisminuirColumnas" text="↓" />
-      <JFXRadioButton fx:id="rb_TCP" layoutX="697.0" layoutY="311.0" selected="true" text="TCP">
+      <JFXTextField fx:id="tf_FilasFragmentos" labelFloat="true" layoutX="530.0" layoutY="159.0" promptText="Filas" />
+      <JFXTextField fx:id="tf_ColumnasFragmentos" labelFloat="true" layoutX="796.0" layoutY="158.0" promptText="Columnas" />
+      <JFXButton fx:id="bot_AumentarFilas" layoutX="669.0" layoutY="169.0" onAction="#presionarBotAumentarFilas" text="↑" />
+      <JFXButton fx:id="bot_DisminuirFilas" layoutX="705.0" layoutY="169.0" onAction="#presionarBotDisminuirFilas" text="↓" />
+      <JFXButton fx:id="bot_AumentarColumnas" layoutX="945.0" layoutY="159.0" onAction="#presionarBotAumentarColumnas" text="↑" />
+      <JFXButton fx:id="Bot_DisminuirColumnas" layoutX="970.0" layoutY="159.0" onAction="#presionarBotDisminuirColumnas" text="↓" />
+      <JFXRadioButton fx:id="rb_TCP" layoutX="697.0" layoutY="327.0" onAction="#presionarRbTCP" selected="true" text="TCP">
          <toggleGroup>
             <ToggleGroup fx:id="TG_TipoEnvio" />
          </toggleGroup>
       </JFXRadioButton>
-      <JFXRadioButton fx:id="rb_UDP" layoutX="774.0" layoutY="311.0" text="UDP" toggleGroup="$TG_TipoEnvio" />
-      <Text layoutX="724.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo de Envio" />
+      <JFXRadioButton fx:id="rb_UDP" layoutX="774.0" layoutY="327.0" onAction="#presionarRbUDP" text="UDP" toggleGroup="$TG_TipoEnvio" />
+      <Text layoutX="724.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo de Envio" />
       <Text layoutX="704.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Seleccion de Imagen" />
-      <Text layoutX="697.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cantidad de fragmentos" />
+      <Text layoutX="690.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cantidad de fragmentos" />
       <ImageView fx:id="iv_imagenAEnviar" fitHeight="499.0" fitWidth="468.0" layoutX="17.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true" />
       <JFXButton fx:id="bot_Enviar" layoutX="899.0" layoutY="477.0" onAction="#presionarBotEnviar" text="Enviar" />
-      <Text layoutX="701.0" layoutY="371.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tamaño de segmento" />
-      <JFXTextField fx:id="tf_TamSegmento" layoutX="670.0" layoutY="388.0" />
-      <JFXRadioButton fx:id="rb_tamSegKB" layoutX="816.0" layoutY="397.0" selected="true" text="KB">
+      <Text layoutX="701.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tamaño de segmento" />
+      <JFXTextField fx:id="tf_TamSegmento" layoutX="670.0" layoutY="245.0" />
+      <JFXRadioButton fx:id="rb_tamSegKB" layoutX="816.0" layoutY="254.0" selected="true" text="KB">
          <toggleGroup>
             <ToggleGroup fx:id="tg_TamSegmento" />
          </toggleGroup>
       </JFXRadioButton>
-      <JFXRadioButton fx:id="rb_tamSegMB" layoutX="877.0" layoutY="397.0" text="MB" toggleGroup="$tg_TamSegmento" />
+      <JFXRadioButton fx:id="rb_tamSegMB" layoutX="877.0" layoutY="254.0" text="MB" toggleGroup="$tg_TamSegmento" />
    </children>
 </AnchorPane>

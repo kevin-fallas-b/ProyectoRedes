@@ -19,6 +19,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -87,6 +89,18 @@ public class PantEmisorController extends Controller implements Initializable {
     private Double aspectRatio = 0.0;
     private Double realWidth;
     private Double realHeight;
+    private List<String> direccionesIpBroadcast;
+    @FXML
+    private AnchorPane apDireccionesIP;
+    @FXML
+    private TableView<String> TbDireccionesAEnviar;
+    @FXML
+    private TableColumn<String,?> tcDireccionesIP;
+    @FXML
+    private JFXTextField txfAgregarDireccionIP;
+    @FXML
+    private JFXButton btnAgregarDireccionIP;
+    
 
     /**
      * Initializes the controller class.
@@ -111,6 +125,7 @@ public class PantEmisorController extends Controller implements Initializable {
         tf_FilasFragmentos.textProperty().addListener((observable, oldValue, newValue) -> {
             graficarImagen();
         });
+        apDireccionesIP.setVisible(false);
     }
 
     @Override
@@ -234,7 +249,21 @@ public class PantEmisorController extends Controller implements Initializable {
     private void intentarEnvio() {
 
         CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
-        CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos());
+        CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos(),(String)TG_TipoEnvio.getUserData(),Integer.valueOf(tamSegmentosProperty.getValue()));
+    }
+
+    @FXML
+    private void presionarAgregarDireccionIP(ActionEvent event) {
+    }
+
+    @FXML
+    private void presionarRbUDP(ActionEvent event) {
+        apDireccionesIP.setVisible(true);
+    }
+
+    @FXML
+    private void presionarRbTCP(ActionEvent event) {
+        apDireccionesIP.setVisible(false);
     }
 
 }

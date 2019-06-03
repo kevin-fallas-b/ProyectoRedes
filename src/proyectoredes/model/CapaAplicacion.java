@@ -93,7 +93,6 @@ public class CapaAplicacion {
     }
 
     private void segmentarImagen() {
-        
         //calculamos la cantidad de pixeles que hay que avanzar entre cada imagen
         Integer aumentoEnX = imagenOriginal.getWidth() / cantColumnas;
         Integer aumentoEnY = imagenOriginal.getHeight() / cantFilas;

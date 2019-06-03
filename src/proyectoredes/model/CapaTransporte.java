@@ -14,7 +14,23 @@ import java.util.List;
  */
 public class CapaTransporte {
 
-    public CapaTransporte(List<BufferedImage> listaImagenes) {
-
+    List<BufferedImage> listaImagenesRecibida;
+    Integer tamano;
+    
+    public CapaTransporte(List<BufferedImage> listaImagenes, String tipoDeEnvio, Integer Tamano) {
+        this.listaImagenesRecibida = listaImagenes;
+        if(tipoDeEnvio == "TCP"){
+            CrearSegmentos();
+        }else{
+            CrearDatagramas();
+        }
+        this.tamano=Tamano;
+    }
+    
+    private void CrearSegmentos(){
+    }
+    
+    private void CrearDatagramas(){
+        
     }
 }
