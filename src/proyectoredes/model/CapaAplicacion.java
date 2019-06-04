@@ -13,12 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
 /**
@@ -33,8 +27,6 @@ public class CapaAplicacion {
     List<BufferedImage> listaSegmentos;//esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
     List<Datos> listaDatos;
     BufferedImage imagenOriginal;
-    VBox apCentro = new VBox();
-    HBox hboxes[] = new HBox[3];
 
     public CapaAplicacion() {
         this.cantFilas = 0;
@@ -88,11 +80,8 @@ public class CapaAplicacion {
         for (int i = 1; i <= cantFilas; i++) {
             for (int k = 1; k <= cantColumnas; k++) {
                 BufferedImage imagen = imagenOriginal.getSubimage(posX, posY, aumentoEnX, aumentoEnY);
-                ImageView imageview = new ImageView(SwingFXUtils.toFXImage(imagen, null));
-                hboxes[i - 1].getChildren().add(imageview);
                 listaSegmentos.add(imagen);
                 posX += aumentoEnX;
-
             }
             posX = 0;
             posY += aumentoEnY;
