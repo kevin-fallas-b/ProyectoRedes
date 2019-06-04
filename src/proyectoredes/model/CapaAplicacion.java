@@ -6,6 +6,7 @@
 package proyectoredes.model;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class CapaAplicacion {
     Integer cantFilas;
     Integer cantColumnas;
     List<BufferedImage> listaSegmentos;//esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
+    List<Datos> listaDatos;
     BufferedImage imagenOriginal;
     VBox apCentro = new VBox();
     HBox hboxes[] = new HBox[3];
@@ -49,22 +51,6 @@ public class CapaAplicacion {
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //probarImagen();
-    }
-
-    private void probarImagen() {
-        Stage stage = new Stage();
-        Scene scene = new Scene(apCentro);
-        apCentro.setSpacing(10.00);
-        stage.setScene(scene);
-        stage.show();
-        hboxes[0] = new HBox();
-        hboxes[1] = new HBox();
-        hboxes[2] = new HBox();
-        hboxes[0].setSpacing(10.00);
-        hboxes[1].setSpacing(10.00);
-        hboxes[2].setSpacing(10.00);
-        apCentro.getChildren().addAll(hboxes);
     }
 
     public Integer getCantFilas() {
@@ -103,7 +89,7 @@ public class CapaAplicacion {
             for (int k = 1; k <= cantColumnas; k++) {
                 BufferedImage imagen = imagenOriginal.getSubimage(posX, posY, aumentoEnX, aumentoEnY);
                 ImageView imageview = new ImageView(SwingFXUtils.toFXImage(imagen, null));
-                hboxes[i-1].getChildren().add(imageview);
+                hboxes[i - 1].getChildren().add(imageview);
                 listaSegmentos.add(imagen);
                 posX += aumentoEnX;
 
@@ -114,4 +100,19 @@ public class CapaAplicacion {
 
     }
 
+    private void pasarSegmentosADatos() throws IOException {
+        listaDatos = new ArrayList();
+        for (int i = 0; i < listaSegmentos.size(); i++) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(listaSegmentos.get(i), "jpg", baos);
+            byte[] bytes = baos.toByteArray();
+            
+            Datos dato = new Datos(i,bytes);
+            listaDatos.add(dato);
+        }
+    }
+
+    public List<Datos> getListaDatos(){
+        return listaDatos;
+    }
 }
