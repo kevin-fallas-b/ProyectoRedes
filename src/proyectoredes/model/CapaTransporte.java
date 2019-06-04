@@ -5,32 +5,33 @@
  */
 package proyectoredes.model;
 
-import java.awt.image.BufferedImage;
+import static java.util.Collections.list;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author Kevin F
  */
 public class CapaTransporte {
-
-    List<BufferedImage> listaImagenesRecibida;
-    Integer tamano;
+    private String TipoTransporte;
+    private List<Datos> ListaDatos;
+    private List<Segmento> ListaSegmentos;
+    private List<Datagrama> ListaDatagramas;
     
-    public CapaTransporte(List<BufferedImage> listaImagenes, String tipoDeEnvio, Integer Tamano) {
-        this.listaImagenesRecibida = listaImagenes;
-        if(tipoDeEnvio == "TCP"){
+    public CapaTransporte(String TipoTransporte, ArrayList<Datos> ListaDatos) {
+        this.ListaDatos = ListaDatos;
+        this.TipoTransporte = TipoTransporte;
+        
+        if(TipoTransporte == "TCP"){
             CrearSegmentos();
-        }else{
+        }else if(TipoTransporte == "UDP"){
             CrearDatagramas();
         }
-        this.tamano=Tamano;
     }
     
     private void CrearSegmentos(){
-        for(int i=0;i<listaImagenesRecibida.size();i++){
-            
-        }
+        ListaSegmentos = new ArrayList<>();
     }
     
     private void CrearDatagramas(){
