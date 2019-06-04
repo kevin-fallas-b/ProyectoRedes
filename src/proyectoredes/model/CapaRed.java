@@ -24,6 +24,7 @@ public class CapaRed {
     private Scanner scanner;
     
     public CapaRed(String direccionDestino) throws IOException{
+        //este constructor es para casos donde se usa TCP, por eso se recibe una unica direccion IP de destino
         this.socket = new Socket(ipServidor,puerto);
         this.ipDestino = InetAddress.getByName(direccionDestino);
     }
@@ -32,7 +33,12 @@ public class CapaRed {
         //esto es cuando es con UDP y hay que hacer broadcast, por eso la lista
         ipServidor = InetAddress.getLocalHost();
     }
-    private void crearTCP(){
+    
+    private void crearServidorTCP(){
+        
+    }
+    
+    private void crearClienteTCP(){
         
     }
 }

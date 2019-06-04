@@ -28,6 +28,9 @@ public class CapaTransporte {
     }
     
     private void CrearSegmentos(){
+        for(int i=0;i<listaImagenesRecibida.size();i++){
+            
+        }
     }
     
     private void CrearDatagramas(){
