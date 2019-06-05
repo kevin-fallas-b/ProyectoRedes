@@ -11,6 +11,7 @@ import com.jfoenix.controls.JFXTextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -268,13 +269,17 @@ public class PantEmisorController extends Controller implements Initializable {
         destinos.add("192.168.1.1");
         CapaRed capaRed = new CapaRed(capaTransporte1.getListaSegmentos(), "192.168.1.12",destinos);
         List<List<Paquete>> lista2 = new ArrayList();
-        //lista2.add(capaRed.getListaPaquetes());
         CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(0));
-        CapaEnlaceDatos capaEnlaceDatos2 = new CapaEnlaceDatos(capaEnlaceDatos.getTramasEnBytes(),1);
-        CapaRed capaRed2 = new CapaRed(capaEnlaceDatos2.getListaPaquetes());
-        CapaTransporte capaTransporte2 = new CapaTransporte(capaRed2.getListaSegmentos(),null);
+        
         try {
-            CapaAplicacion capaAp2 = new CapaAplicacion(capaTransporte2.getListaDatos());
+            for(int i=0; i<capaEnlaceDatos.getTramasEnBytes().size(); i++){
+                Socket socket = new Socket("192.168.1.9", 13000);
+                OutputStream os = socket.getOutputStream();
+                os.write(capaEnlaceDatos.getTramasEnBytes().get(i));
+                os.flush();
+                System.out.println("Trama numero "+i+" enviada!");
+                socket.close();
+            }
         } catch (IOException ex) {
             Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
         }
