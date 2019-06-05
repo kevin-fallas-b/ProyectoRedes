@@ -5,11 +5,13 @@
  */
 package proyectoredes.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Kevin F
  */
-public class Segmento {
+public class Segmento implements Serializable{
     private byte []Datos;
     private int numReconstruccion;
     private int numSegmento;

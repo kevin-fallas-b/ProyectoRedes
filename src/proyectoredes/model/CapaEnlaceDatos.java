@@ -6,6 +6,7 @@
 package proyectoredes.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -15,9 +16,9 @@ import org.apache.commons.lang3.SerializationUtils;
  */
 public class CapaEnlaceDatos {
 
-    private List<Paquete> listaPaquetes;
-    private List<Trama> listaTramas;
-    private List<byte[]> tramasEnBytes;
+    private List<Paquete> listaPaquetes  = new ArrayList();
+    private List<Trama> listaTramas  = new ArrayList();
+    private List<byte[]> tramasEnBytes = new ArrayList();
 
     public CapaEnlaceDatos(List<Paquete> paquetes) {
         this.listaPaquetes = paquetes;
@@ -56,7 +57,7 @@ public class CapaEnlaceDatos {
     private void serializarTramas() {
         for (int i = 0; i < listaTramas.size(); i++) {
             //serializar cada trama y agregarla a la list de tramas serializadas 
-            byte[] datos = SerializationUtils.serialize((Serializable) listaTramas.get(i));
+            byte[] datos = SerializationUtils.serialize(listaTramas.get(i));
             tramasEnBytes.add(datos);
         }
     }
@@ -74,5 +75,9 @@ public class CapaEnlaceDatos {
             Paquete paquete = listaTramas.get(i).getPaquete();
             listaPaquetes.add(paquete);
         }
+    }
+    
+    public List<byte[]> getTramasEnBytes(){
+        return tramasEnBytes;
     }
 }

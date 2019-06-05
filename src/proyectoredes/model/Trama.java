@@ -5,11 +5,13 @@
  */
 package proyectoredes.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Kevin F
  */
-public class Trama {
+public class Trama implements Serializable{
 
     private Integer numTrama;
     private Paquete paquete;

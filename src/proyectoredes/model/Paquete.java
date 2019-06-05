@@ -5,13 +5,14 @@
  */
 package proyectoredes.model;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
 /**
  *
  * @author Kevin F
  */
-public class Paquete {
+public class Paquete implements Serializable{
     private InetAddress ipOrigen;
     private InetAddress ipDestino;
     private Segmento datos;

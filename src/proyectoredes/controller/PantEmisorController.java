@@ -36,7 +36,10 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import proyectoredes.model.CapaAplicacion;
+import proyectoredes.model.CapaEnlaceDatos;
+import proyectoredes.model.CapaRed;
 import proyectoredes.model.CapaTransporte;
+import proyectoredes.model.Paquete;
 import proyectoredes.util.FlowController;
 import proyectoredes.util.Formato;
 import proyectoredes.util.Mensaje;
@@ -261,13 +264,20 @@ public class PantEmisorController extends Controller implements Initializable {
     private void intentarEnvio() {
         CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
         CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
-        CapaTransporte capaTransporte2 = new CapaTransporte(capaTransporte1.getListaSegmentos(), null);
+        List<String> destinos = new ArrayList();
+        destinos.add("192.168.1.1");
+        CapaRed capaRed = new CapaRed(capaTransporte1.getListaSegmentos(), "192.168.1.12",destinos);
+        List<List<Paquete>> lista2 = new ArrayList();
+        //lista2.add(capaRed.getListaPaquetes());
+        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(0));
+        CapaEnlaceDatos capaEnlaceDatos2 = new CapaEnlaceDatos(capaEnlaceDatos.getTramasEnBytes(),1);
+        CapaRed capaRed2 = new CapaRed(capaEnlaceDatos2.getListaPaquetes());
+        CapaTransporte capaTransporte2 = new CapaTransporte(capaRed2.getListaSegmentos(),null);
         try {
-            capaAplicacion = new CapaAplicacion(capaTransporte2.getListaDatos());
+            CapaAplicacion capaAp2 = new CapaAplicacion(capaTransporte2.getListaDatos());
         } catch (IOException ex) {
             Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
 
     @FXML

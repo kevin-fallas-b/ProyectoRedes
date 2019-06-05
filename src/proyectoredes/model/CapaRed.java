@@ -18,10 +18,10 @@ import java.util.logging.Logger;
  */
 public class CapaRed {
 
-    private List<Segmento> listaSegmentos;
-    private List<List<Paquete>> listaPaquetes;
+    private List<Segmento> listaSegmentos = new ArrayList();
+    private List<List<Paquete>> listaPaquetes = new ArrayList();
     private InetAddress ipOrigen;
-    private List<InetAddress> ipsDestinos;
+    private List<InetAddress> ipsDestinos = new ArrayList();
 
     //constructor para la hora de envio
     public CapaRed(List<Segmento> segmentos, String ipOrigen, List<String> ipsDestinos) {
@@ -37,7 +37,7 @@ public class CapaRed {
 
         enPaquetar();
     }
-    
+
     //constructor para la hora de recepcion
     public CapaRed(List<Paquete> paquetes) {
         this.listaPaquetes.add(paquetes);
@@ -72,9 +72,10 @@ public class CapaRed {
     }
 
     private void desEnPaquetar() {
-        for (int i = 0; i < listaPaquetes.size(); i++) {
-            Segmento segmento = listaPaquetes.get(i).get(0).getDatos();
+        for (int i = 0; i < listaPaquetes.get(0).size(); i++) {
+            Segmento segmento = listaPaquetes.get(0).get(i).getDatos();
             listaSegmentos.add(segmento);
         }
+        System.out.println("Se despaquetaron "+listaSegmentos.size()+" segmentos");
     }
 }
