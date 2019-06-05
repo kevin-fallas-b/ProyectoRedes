@@ -5,12 +5,16 @@
  */
 package proyectoredes.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -35,12 +39,69 @@ public class CapaTransporte {
         }
     }
     
-    public CapaTransporte(List<Segmento> ListaSegmentos){
-        
+    public CapaTransporte(List<Segmento> ListaSegmentos, List<Datagrama> ListaDatagramas){
+        if(ListaSegmentos != null){
+           this.ListaSegmentos = ListaSegmentos;
+            ReconstruirSegmentos();
+        }else if(ListaDatagramas != null){
+            this.ListaDatagramas = ListaDatagramas;
+            ReconstruirDatagramas();
+        }
     }
     
     private void ReconstruirSegmentos(){
+        ListaDatos = new ArrayList();
+        boolean bandera = true;
+        int numDato = 0;
+        int numReconstrucion = 0;
         
+        while(bandera){
+            byte[] bytes = new byte[0];
+            
+            //
+            //CONCATENA TODOS LOS DATOS DIVIDIDOS EN BYTES
+            for(int i=0; i<ListaSegmentos.size();i++){
+                if(ListaSegmentos.get(i).getNumSegmento()==numDato){
+                    if(ListaSegmentos.get(i).getNumReconstruccion()==numReconstrucion){
+                        bytes = Concatenar(bytes, ListaSegmentos.get(i).getDatos());
+                        ListaSegmentos.remove(i);
+                    }
+                }
+            }
+            //TERMINA DE CONCATENAR EN BYTES
+            //
+            
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            ObjectInput in = null;
+            try {
+                in = new ObjectInputStream(bis);
+                ListaDatos.add(Datos.class.cast(in.readObject()));
+                if (in != null) {
+                    in.close();
+                }
+            }catch(ClassNotFoundException ex){
+                //
+            }catch (IOException ex) {
+                // ignore close exception
+            }
+            
+            if(ListaSegmentos.size() == 0){
+                bandera = false;
+            }
+        }
+    }
+    
+    private byte[] Concatenar(byte[] primero, byte[] segundo){
+        byte[] concatenados = new byte[primero.length+segundo.length];
+        for(int i=0; i<primero.length;i++){
+            concatenados[i]=primero[i];
+        }
+        
+        for(int i=0; i<segundo.length; i++){
+            concatenados[i+primero.length] = segundo[i];
+        }
+        
+        return concatenados;
     }
     
     private void ReconstruirDatagramas(){
