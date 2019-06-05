@@ -12,9 +12,13 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
  *
@@ -71,23 +75,7 @@ public class CapaTransporte {
             //TERMINA DE CONCATENAR EN BYTES
             //
             
-            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-            ObjectInput in = null;
-            try {
-                in = new ObjectInputStream(bis);
-                ListaDatos.add(Datos.class.cast(in.readObject()));
-                if (in != null) {
-                    in.close();
-                }
-            }catch(ClassNotFoundException ex){
-                //
-            }catch (IOException ex) {
-                // ignore close exception
-            }
-            
-            if(ListaSegmentos.size() == 0){
-                bandera = false;
-            }
+            ListaDatos.add(SerializationUtils.deserialize(bytes));
         }
     }
     
@@ -117,21 +105,7 @@ public class CapaTransporte {
             Datos dato = ListaDatos.get(i);
             byte[] bytes;
             
-            //
-            //CODIGO PARA CONVERTIR EL OBJETO DATOS A UN ARRAY DE BYTES
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutput out = null;
-            try {
-                out = new ObjectOutputStream(bos);   
-                out.writeObject(dato);
-                out.flush();
-                bytes = bos.toByteArray();
-                bos.close();
-            }catch (IOException ex) {
-                bytes = new byte[0];
-            }
-            //FIN DE CONVERSION
-            //
+            bytes = SerializationUtils.serialize(dato);
             
             int tamano = kb*1024;
             int tamanoActual = 0;

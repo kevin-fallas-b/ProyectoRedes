@@ -5,11 +5,13 @@
  */
 package proyectoredes.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Kevin F
  */
-public class Datos {
+public class Datos implements Serializable{
     private Integer numFragmento;
     private byte[] imagen;
     private Integer cantMaxFilas;
