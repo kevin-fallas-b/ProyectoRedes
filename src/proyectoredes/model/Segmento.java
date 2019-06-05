@@ -10,5 +10,9 @@ package proyectoredes.model;
  * @author Kevin F
  */
 public class Segmento {
+    private byte []Datos;
     
+    public Segmento(byte []Datos){
+        this.Datos = Datos;
+    }
 }
