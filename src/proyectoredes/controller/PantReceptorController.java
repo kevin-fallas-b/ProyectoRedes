@@ -9,14 +9,24 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
+import proyectoredes.model.CapaAplicacion;
+import proyectoredes.model.CapaEnlaceDatos;
+import proyectoredes.model.CapaRed;
+import proyectoredes.model.CapaTransporte;
+import proyectoredes.model.Trama;
+import proyectoredes.util.Conexion;
 
 /**
  * FXML Controller class
@@ -33,8 +43,11 @@ public class PantReceptorController extends Controller implements Initializable 
     private JFXButton bot_Detener;
     @FXML
     private ImageView iv_imagen;
-    private ServerSocket serverSocket;
+    public static ServerSocket serverSocket;
+    private Socket socket;
     private Integer puerto;
+    public static List<Trama> tramasRecibidas = new ArrayList();
+    private Conexion conexion;
 
     /**
      * Initializes the controller class.
@@ -76,10 +89,35 @@ public class PantReceptorController extends Controller implements Initializable 
 
     private void empezarAEscuchar() throws IOException {
         serverSocket = new ServerSocket(puerto);
+        esperarConexion();
 
     }
 
+    private void esperarConexion() throws IOException {
+        conexion = new Conexion(null);
+        conexion.start();
+        
+    }
+
     private void detenerEscuchar() throws IOException {
-        serverSocket.close();
+        conexion.setContinuar(false);
+        //serverSocket.close();
+        armarImagen();
+    }
+
+    private void armarImagen() {
+        //ordenar lista de tramas
+        tramasRecibidas = tramasRecibidas.stream().sorted((o1, o2)->o1.getNumTrama().
+                                   compareTo(o2.getNumTrama())).
+                                   collect(Collectors.toList());
+        
+        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(tramasRecibidas,"hola");
+        CapaRed capaRed = new CapaRed(capaEnlaceDatos.getListaPaquetes());
+        CapaTransporte capaTransporte = new CapaTransporte(capaRed.getListaSegmentos(),null);
+        try {
+            CapaAplicacion capaAplicacion = new CapaAplicacion(capaTransporte.getListaDatos());
+        } catch (IOException ex) {
+            Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

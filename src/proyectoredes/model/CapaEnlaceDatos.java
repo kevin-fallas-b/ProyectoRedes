@@ -20,6 +20,10 @@ public class CapaEnlaceDatos {
     private List<Trama> listaTramas  = new ArrayList();
     private List<byte[]> tramasEnBytes = new ArrayList();
 
+    public CapaEnlaceDatos(List<Trama> tramasRecibidas, String hola){
+        this.listaTramas = tramasRecibidas;
+        pasarTramasAPaquetes();
+    }
     public CapaEnlaceDatos(List<Paquete> paquetes) {
         this.listaPaquetes = paquetes;
         pasarPaquetesATramas();
