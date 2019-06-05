@@ -98,12 +98,11 @@ public class PantEmisorController extends Controller implements Initializable {
     @FXML
     private TableView<String> TbDireccionesAEnviar;
     @FXML
-    private TableColumn<String,?> tcDireccionesIP;
+    private TableColumn<String, ?> tcDireccionesIP;
     @FXML
     private JFXTextField txfAgregarDireccionIP;
     @FXML
     private JFXButton btnAgregarDireccionIP;
-    
 
     /**
      * Initializes the controller class.
@@ -252,13 +251,14 @@ public class PantEmisorController extends Controller implements Initializable {
     private void intentarEnvio() {
 
         CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
-        CapaTransporte capaTransporte1 = new CapaTransporte("TCP",capaAplicacion.getListaDatos(), 100);
-        CapaTransporte capaTransporte2 = new CapaTransporte(capaTransporte1.getListaSegmentos(), null);        
+        CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
+        CapaTransporte capaTransporte2 = new CapaTransporte(capaTransporte1.getListaSegmentos(), null);
         try {
             capaAplicacion = new CapaAplicacion(capaTransporte2.getListaDatos());
         } catch (IOException ex) {
             Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @FXML

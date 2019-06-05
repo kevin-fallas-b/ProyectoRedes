@@ -14,6 +14,7 @@ import java.util.List;
 public class CapaEnlaceDatos {
     private List<Paquete> paquetesRecibidos;
     private List<Trama> tramasListasParaEnvio;
+    private List<byte[]> tramasEnBytes;
 
     public List<Paquete> getPaquetesRecibidos() {
         return paquetesRecibidos;
@@ -31,5 +32,16 @@ public class CapaEnlaceDatos {
         this.tramasListasParaEnvio = tramasListasParaEnvio;
     }
     
+    private void pasarPaquetesATramas(){
+        for(int i=0;i<paquetesRecibidos.size();i++){
+            Trama trama = new Trama(i,paquetesRecibidos.get(i),false);
+            tramasListasParaEnvio.add(trama);
+        }
+    }
     
+    private void serializarTramas(){
+        for(int i=0;i<tramasListasParaEnvio.size();i++){
+            //serializar cada trama y agregarla a la list de tramas serializadas 
+        }
+    }
 }
