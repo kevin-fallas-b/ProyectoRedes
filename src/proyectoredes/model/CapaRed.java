@@ -5,40 +5,76 @@
  */
 package proyectoredes.model;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Kevin F
  */
 public class CapaRed {
-    private final Integer puerto = 13000;
-    private InetAddress ipServidor;
-    private InetAddress ipDestino;//para casos donde se usa conexion TCP
-    private Socket socket;
-    private Scanner scanner;
-    
-    public CapaRed(String direccionDestino) throws IOException{
-        //este constructor es para casos donde se usa TCP, por eso se recibe una unica direccion IP de destino
-        this.socket = new Socket(ipServidor,puerto);
-        this.ipDestino = InetAddress.getByName(direccionDestino);
+
+    private List<Segmento> listaSegmentos;
+    private List<List<Paquete>> listaPaquetes;
+    private InetAddress ipOrigen;
+    private List<InetAddress> ipsDestinos;
+
+    //constructor para la hora de envio
+    public CapaRed(List<Segmento> segmentos, String ipOrigen, List<String> ipsDestinos) {
+        this.listaSegmentos = segmentos;
+        try {
+            this.ipOrigen = InetAddress.getByName(ipOrigen);
+            for (int i = 0; i < ipsDestinos.size(); i++) {
+                this.ipsDestinos.add(InetAddress.getByName(ipsDestinos.get(i)));
+            }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(CapaRed.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        enPaquetar();
     }
     
-    public CapaRed(List<String> Destinos) throws UnknownHostException{
-        //esto es cuando es con UDP y hay que hacer broadcast, por eso la lista
-        ipServidor = InetAddress.getLocalHost();
+    //constructor para la hora de recepcion
+    public CapaRed(List<Paquete> paquetes) {
+        this.listaPaquetes.add(paquetes);
+        desEnPaquetar();
     }
-    
-    private void crearServidorTCP(){
-        
+
+    public List<Segmento> getListaSegmentos() {
+        return listaSegmentos;
     }
-    
-    private void crearClienteTCP(){
-        
+
+    public void setListaSegmentos(List<Segmento> listaSegmentos) {
+        this.listaSegmentos = listaSegmentos;
+    }
+
+    public List<List<Paquete>> getListaPaquetes() {
+        return listaPaquetes;
+    }
+
+    public void setListaPaquetes(List<List<Paquete>> listaPaquetes) {
+        this.listaPaquetes = listaPaquetes;
+    }
+
+    private void enPaquetar() {
+        for (int k = 0; k < ipsDestinos.size(); k++) {
+            List<Paquete> paquetesNuevos = new ArrayList();
+            for (int i = 0; i < listaSegmentos.size(); i++) {
+                Paquete paquete = new Paquete(ipOrigen, ipsDestinos.get(k), listaSegmentos.get(i));
+                paquetesNuevos.add(paquete);
+            }
+            listaPaquetes.add(paquetesNuevos);
+        }
+    }
+
+    private void desEnPaquetar() {
+        for (int i = 0; i < listaPaquetes.size(); i++) {
+            Segmento segmento = listaPaquetes.get(i).get(0).getDatos();
+            listaSegmentos.add(segmento);
+        }
     }
 }
