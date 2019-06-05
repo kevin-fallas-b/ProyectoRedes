@@ -3,9 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Kevin%20F/Documents/Codigo/Codigo/Netbeans/ProyectoRedes/src/proyectoredes/model/CapaTransporte.java</file>
-            <file>file:/C:/Users/Kevin%20F/Documents/Codigo/Codigo/Netbeans/ProyectoRedes/src/proyectoredes/controller/PantEmisorController.java</file>
-            <file>file:/C:/Users/Kevin%20F/Documents/Codigo/Codigo/Netbeans/ProyectoRedes/src/proyectoredes/model/CapaAplicacion.java</file>
+            <file>file:/C:/Users/pipep/Documents/NetBeansProjects/ProyectoRedes/src/proyectoredes/model/Segmento.java</file>
+            <file>file:/C:/Users/pipep/Documents/NetBeansProjects/ProyectoRedes/src/proyectoredes/model/CapaTransporte.java</file>
+            <file>file:/C:/Users/pipep/Documents/NetBeansProjects/ProyectoRedes/src/proyectoredes/ProyectoRedes.java</file>
+            <file>file:/C:/Users/pipep/Documents/NetBeansProjects/ProyectoRedes/src/proyectoredes/model/Datos.java</file>
+            <file>file:/C:/Users/pipep/Documents/NetBeansProjects/ProyectoRedes/src/proyectoredes/model/CapaAplicacion.java</file>
         </group>
     </open-files>
 </project-private>
