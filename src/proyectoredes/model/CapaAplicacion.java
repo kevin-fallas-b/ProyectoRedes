@@ -5,6 +5,7 @@
  */
 package proyectoredes.model;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +45,11 @@ public class CapaAplicacion {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         segmentarImagen();
+        try {
+            pasarDatosASegmentos();
+        } catch (IOException ex) {
+            Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public CapaAplicacion(List<Datos> listaDatos) throws IOException {
@@ -110,12 +116,13 @@ public class CapaAplicacion {
             ImageIO.write(listaSegmentos.get(i), "jpg", baos);
             byte[] bytes = baos.toByteArray();
 
-            Datos dato = new Datos(i, bytes,1,1,cantFilas,cantColumnas);
+            Datos dato = new Datos(i,bytes,cantFilas,cantColumnas);
             listaDatos.add(dato);
         }
     }
 
     private void pasarDatosASegmentos() throws IOException {
+        listaSegmentos = new ArrayList();
         for (int i = 0; i < listaDatos.size(); i++) {
             ByteArrayInputStream bis = new ByteArrayInputStream(listaDatos.get(i).getImagen());
             BufferedImage bImage = ImageIO.read(bis);
@@ -126,6 +133,36 @@ public class CapaAplicacion {
     }
     
     private void pasarSegmentosAImagen(){
+        cantFilas = listaDatos.get(0).getCantMaxFilas();
+        cantColumnas = listaDatos.get(0).getCantMaxColumnas();
+        Integer cont=0;//simple contador para saber cual imagen leer de la lista
+        Integer aumentoEnX=listaSegmentos.get(0).getWidth();
+        Integer aumentoEnY=listaSegmentos.get(0).getHeight();
+        Integer xCurrent=0;
+        Integer yCurrent=0;
+        //tenemos que calcular que tan alta y ancha va a ser la imagen final
+        Integer alturaFinal = listaSegmentos.get(0).getHeight()*cantFilas;
+        Integer AnchoFinal = listaSegmentos.get(0).getWidth()*cantColumnas;
+        //creamos una imagen en blanco con las dimensiones correctas donde vamos a agregar las imagenes pequenas
+        BufferedImage imagenFinal = new BufferedImage(AnchoFinal, alturaFinal, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = imagenFinal.createGraphics();
         
+        //agregamos los segmentos de imagen a la imagen final
+        for(int i=0;i<cantFilas;i++){
+            for(int k=0;k<cantColumnas;k++){
+                g2d.drawImage(listaSegmentos.get(cont),xCurrent,yCurrent,null);
+                xCurrent+=aumentoEnX;
+                cont++;
+            }
+            yCurrent+=aumentoEnY;
+            xCurrent=0;
+        }
+        g2d.dispose();
+        try {
+            System.out.println(ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg")));
+            System.out.println("se intento guardar la imagen");
+        } catch (IOException ex) {
+            Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
