@@ -249,7 +249,7 @@ public class PantEmisorController extends Controller implements Initializable {
     private void intentarEnvio() {
 
         CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
-        CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos(),(String)TG_TipoEnvio.getUserData(),Integer.valueOf(tamSegmentosProperty.getValue()));
+        //CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos(),(String)TG_TipoEnvio.getUserData(),Integer.valueOf(tamSegmentosProperty.getValue()));
     }
 
     @FXML

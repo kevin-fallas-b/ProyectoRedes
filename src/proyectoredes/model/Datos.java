@@ -12,10 +12,18 @@ package proyectoredes.model;
 public class Datos {
     private Integer numFragmento;
     private byte[] imagen;
+    private Integer cantMaxFilas;
+    private Integer cantMaxColumnas;
+    private Integer fila;
+    private Integer columna;
     
-    public Datos(Integer numFragmento, byte[] imagen){
+    public Datos(Integer numFragmento, byte[] imagen, Integer fila, Integer columna, Integer cantMaxFilas, Integer cantMaxColumnas){
         this.numFragmento = numFragmento;
         this.imagen = imagen;
+        this.fila= fila;
+        this.columna = columna;
+        this.cantMaxFilas = cantMaxFilas;
+        this.cantMaxColumnas = cantMaxColumnas;
     }
 
     public Integer getNumFragmento() {

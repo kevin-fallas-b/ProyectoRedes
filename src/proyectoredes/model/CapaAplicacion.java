@@ -6,6 +6,7 @@
 package proyectoredes.model;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import javax.imageio.ImageIO;
  * @author Kevin F
  */
 public class CapaAplicacion {
-    //esta clase define como trabaja el protocolo KF
+    //esta clase define como trabaja el protocolo KFFM
 
     Integer cantFilas;
     Integer cantColumnas;
@@ -39,10 +40,15 @@ public class CapaAplicacion {
         this.listaSegmentos = new ArrayList<BufferedImage>();
         try {
             this.imagenOriginal = ImageIO.read(pathImagen);
-            System.out.println("width: " + imagenOriginal.getWidth() + "  Height: " + imagenOriginal.getHeight());
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
+        segmentarImagen();
+    }
+
+    public CapaAplicacion(List<Datos> listaDatos) throws IOException {
+        this.listaDatos = listaDatos;
+        pasarDatosASegmentos();
     }
 
     public Integer getCantFilas() {
@@ -61,13 +67,17 @@ public class CapaAplicacion {
         this.cantColumnas = cantColumnas;
     }
 
+    public void setListaSegmentos(List<BufferedImage> listaSegmentos) {
+        this.listaSegmentos = listaSegmentos;
+    }
+
     public List<BufferedImage> getListaSegmentos() {
-        segmentarImagen();
+
         return listaSegmentos;
     }
 
-    public void setListaSegmentos(List<BufferedImage> listaSegmentos) {
-        this.listaSegmentos = listaSegmentos;
+    public List<Datos> getListaDatos() {
+        return listaDatos;
     }
 
     private void segmentarImagen() {
@@ -86,7 +96,11 @@ public class CapaAplicacion {
             posX = 0;
             posY += aumentoEnY;
         }
-
+        try {
+            pasarSegmentosADatos();
+        } catch (IOException ex) {
+            Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void pasarSegmentosADatos() throws IOException {
@@ -95,13 +109,23 @@ public class CapaAplicacion {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(listaSegmentos.get(i), "jpg", baos);
             byte[] bytes = baos.toByteArray();
-            
-            Datos dato = new Datos(i,bytes);
+
+            Datos dato = new Datos(i, bytes,1,1,cantFilas,cantColumnas);
             listaDatos.add(dato);
         }
     }
 
-    public List<Datos> getListaDatos(){
-        return listaDatos;
+    private void pasarDatosASegmentos() throws IOException {
+        for (int i = 0; i < listaDatos.size(); i++) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(listaDatos.get(i).getImagen());
+            BufferedImage bImage = ImageIO.read(bis);
+            ImageIO.write(bImage, "jpg", new File("output" + i + ".jpg"));
+            listaSegmentos.add(bImage);
+        }
+        pasarSegmentosAImagen();
+    }
+    
+    private void pasarSegmentosAImagen(){
+        
     }
 }
