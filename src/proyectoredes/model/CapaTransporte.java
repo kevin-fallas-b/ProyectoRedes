@@ -5,20 +5,8 @@
  */
 package proyectoredes.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.SerializationUtils;
 
 /**
@@ -56,6 +44,10 @@ public class CapaTransporte {
     
     private void ReconstruirSegmentos(){
         ListaDatos = new ArrayList();
+        for(int i=0; i<ListaSegmentos.size(); i++){
+            ListaDatos.add((Datos)SerializationUtils.deserialize(ListaSegmentos.get(i).getDatos()));
+        }
+        /*
         boolean bandera = true;
         int numDato = 0;
         
@@ -78,8 +70,7 @@ public class CapaTransporte {
             numDato++;
             //System.out.println(Arrays.toString(bytes));
             Datos datoaux = (Datos)SerializationUtils.deserialize(bytes);
-            ListaDatos.add(datoaux);
-        }
+        }*/
     }
     
     private byte[] Concatenar(byte[] primero, byte[] segundo){
@@ -98,10 +89,14 @@ public class CapaTransporte {
     private void ReconstruirDatagramas(){
     
     }
-    
+     
     private void CrearSegmentos(){
         ListaSegmentos = new ArrayList<>();
         
+        for(int i=0; i<ListaDatos.size(); i++){
+            ListaSegmentos.add(new Segmento(SerializationUtils.serialize(ListaDatos.get(i)), 0, i));
+        }
+        /*
         //
         //UN CLICLO POR DATO EN LA LISTA
         for(int i=0; i<ListaDatos.size();i++){
@@ -109,17 +104,19 @@ public class CapaTransporte {
             byte[] bytes;
             
             bytes = SerializationUtils.serialize(dato);
+            //System.out.println(Arrays.toString(bytes));
             
             int tamano = kb*1024;
             int tamanoActual = 0;
             Boolean bandera = true;
             if(bytes.length>0){
                 //System.out.println(bytes.length);
+                int numReconstruccion = 0;
                 while(bandera){
-                    int numReconstruccion = 0;
                     byte[] aux = new byte[tamano];
                     for(int j=0; j<tamano&&tamanoActual<bytes.length; j++){
                         aux[j] = bytes[tamanoActual];
+                        System.out.println(bytes[tamanoActual]);
                         tamanoActual++;
                     }
                     Segmento segmentoAux = new Segmento(aux, numReconstruccion, i);
@@ -132,7 +129,7 @@ public class CapaTransporte {
             }
         }
         //FIN DE CICLO POR DATO
-        //
+        //*/
     }
     
     private void CrearDatagramas(){

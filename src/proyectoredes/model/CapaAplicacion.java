@@ -170,7 +170,7 @@ public class CapaAplicacion {
         g2d.dispose();
         // este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
         try {
-            ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
+            ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\pipep\\Pictures\\concat.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
