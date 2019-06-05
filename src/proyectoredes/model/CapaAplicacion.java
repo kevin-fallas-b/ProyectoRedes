@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package proyectoredes.model;
 
 import java.awt.Graphics2D;
@@ -24,18 +19,14 @@ import javax.imageio.ImageIO;
 public class CapaAplicacion {
     //esta clase define como trabaja el protocolo KFFM
 
-    Integer cantFilas;
-    Integer cantColumnas;
-    List<BufferedImage> listaSegmentos;//esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
-    List<Datos> listaDatos;
-    BufferedImage imagenOriginal;
+    private Integer cantFilas;
+    private Integer cantColumnas;
+    private List<BufferedImage> listaSegmentos; //esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
+    private List<Datos> listaDatos;            //lista que contiene objetos tipos datos, es la misma lista de segmentos pero en bytes basicamente
+    private BufferedImage imagenOriginal;
 
-    public CapaAplicacion() {
-        this.cantFilas = 0;
-        this.cantColumnas = 0;
-    }
-
-    public CapaAplicacion(Integer cantFil, Integer cantCol, File pathImagen) {
+    public CapaAplicacion(Integer cantFil, Integer cantCol, File pathImagen) {  //constructor utilizado para el envio
+        
         this.cantFilas = cantFil;
         this.cantColumnas = cantCol;
         this.listaSegmentos = new ArrayList<BufferedImage>();
@@ -45,18 +36,14 @@ public class CapaAplicacion {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         segmentarImagen();
-        try {
-            pasarDatosASegmentos();
-        } catch (IOException ex) {
-            Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
-    public CapaAplicacion(List<Datos> listaDatos) throws IOException {
+    public CapaAplicacion(List<Datos> listaDatos) throws IOException {          //constructor utilizado para la recepcion
         this.listaDatos = listaDatos;
         pasarDatosASegmentos();
     }
-
+    
+    //seccion de getters y setters
     public Integer getCantFilas() {
         return cantFilas;
     }
@@ -81,10 +68,24 @@ public class CapaAplicacion {
 
         return listaSegmentos;
     }
+    
+    public void setListaDatos(List<Datos> lista){
+        this.listaDatos = lista;
+    }
 
     public List<Datos> getListaDatos() {
         return listaDatos;
     }
+
+    public BufferedImage getImagenOriginal() {
+        return imagenOriginal;
+    }
+
+    public void setImagenOriginal(BufferedImage imagenOriginal) {
+        this.imagenOriginal = imagenOriginal;
+    }
+    
+    //estos dos metodos se encargan de alistar la imagen original para el envio
 
     private void segmentarImagen() {
         //calculamos la cantidad de pixeles que hay que avanzar entre cada imagen
@@ -120,6 +121,8 @@ public class CapaAplicacion {
             listaDatos.add(dato);
         }
     }
+    
+    //estos dos metodos de abajo son para la recepcion 
 
     private void pasarDatosASegmentos() throws IOException {
         listaSegmentos = new ArrayList();
@@ -158,11 +161,11 @@ public class CapaAplicacion {
             xCurrent=0;
         }
         g2d.dispose();
+        /* este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
         try {
-            System.out.println(ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg")));
-            System.out.println("se intento guardar la imagen");
+            ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 }
