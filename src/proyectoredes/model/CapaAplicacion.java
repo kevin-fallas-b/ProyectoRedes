@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package proyectoredes.model;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,18 +19,14 @@ import javax.imageio.ImageIO;
 public class CapaAplicacion {
     //esta clase define como trabaja el protocolo KFFM
 
-    Integer cantFilas;
-    Integer cantColumnas;
-    List<BufferedImage> listaSegmentos;//esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
-    List<Datos> listaDatos;
-    BufferedImage imagenOriginal;
+    private Integer cantFilas;
+    private Integer cantColumnas;
+    private List<BufferedImage> listaSegmentos; //esta lista es la imagen original nada mas que ahora divida en muchas imagenes pequenas
+    private List<Datos> listaDatos;            //lista que contiene objetos tipos datos, es la misma lista de segmentos pero en bytes basicamente
+    private BufferedImage imagenOriginal;
 
-    public CapaAplicacion() {
-        this.cantFilas = 0;
-        this.cantColumnas = 0;
-    }
-
-    public CapaAplicacion(Integer cantFil, Integer cantCol, File pathImagen) {
+    public CapaAplicacion(Integer cantFil, Integer cantCol, File pathImagen) {  //constructor utilizado para el envio
+        
         this.cantFilas = cantFil;
         this.cantColumnas = cantCol;
         this.listaSegmentos = new ArrayList<BufferedImage>();
@@ -46,11 +38,12 @@ public class CapaAplicacion {
         segmentarImagen();
     }
 
-    public CapaAplicacion(List<Datos> listaDatos) throws IOException {
+    public CapaAplicacion(List<Datos> listaDatos) throws IOException {          //constructor utilizado para la recepcion
         this.listaDatos = listaDatos;
         pasarDatosASegmentos();
     }
-
+    
+    //seccion de getters y setters
     public Integer getCantFilas() {
         return cantFilas;
     }
@@ -75,10 +68,24 @@ public class CapaAplicacion {
 
         return listaSegmentos;
     }
+    
+    public void setListaDatos(List<Datos> lista){
+        this.listaDatos = lista;
+    }
 
     public List<Datos> getListaDatos() {
         return listaDatos;
     }
+
+    public BufferedImage getImagenOriginal() {
+        return imagenOriginal;
+    }
+
+    public void setImagenOriginal(BufferedImage imagenOriginal) {
+        this.imagenOriginal = imagenOriginal;
+    }
+    
+    //estos dos metodos se encargan de alistar la imagen original para el envio
 
     private void segmentarImagen() {
         //calculamos la cantidad de pixeles que hay que avanzar entre cada imagen
@@ -110,12 +117,15 @@ public class CapaAplicacion {
             ImageIO.write(listaSegmentos.get(i), "jpg", baos);
             byte[] bytes = baos.toByteArray();
 
-            Datos dato = new Datos(i, bytes,1,1,cantFilas,cantColumnas);
+            Datos dato = new Datos(i,bytes,cantFilas,cantColumnas);
             listaDatos.add(dato);
         }
     }
+    
+    //estos dos metodos de abajo son para la recepcion 
 
     private void pasarDatosASegmentos() throws IOException {
+        listaSegmentos = new ArrayList();
         for (int i = 0; i < listaDatos.size(); i++) {
             ByteArrayInputStream bis = new ByteArrayInputStream(listaDatos.get(i).getImagen());
             BufferedImage bImage = ImageIO.read(bis);
@@ -126,6 +136,36 @@ public class CapaAplicacion {
     }
     
     private void pasarSegmentosAImagen(){
+        cantFilas = listaDatos.get(0).getCantMaxFilas();
+        cantColumnas = listaDatos.get(0).getCantMaxColumnas();
+        Integer cont=0;//simple contador para saber cual imagen leer de la lista
+        Integer aumentoEnX=listaSegmentos.get(0).getWidth();
+        Integer aumentoEnY=listaSegmentos.get(0).getHeight();
+        Integer xCurrent=0;
+        Integer yCurrent=0;
+        //tenemos que calcular que tan alta y ancha va a ser la imagen final
+        Integer alturaFinal = listaSegmentos.get(0).getHeight()*cantFilas;
+        Integer AnchoFinal = listaSegmentos.get(0).getWidth()*cantColumnas;
+        //creamos una imagen en blanco con las dimensiones correctas donde vamos a agregar las imagenes pequenas
+        BufferedImage imagenFinal = new BufferedImage(AnchoFinal, alturaFinal, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = imagenFinal.createGraphics();
         
+        //agregamos los segmentos de imagen a la imagen final
+        for(int i=0;i<cantFilas;i++){
+            for(int k=0;k<cantColumnas;k++){
+                g2d.drawImage(listaSegmentos.get(cont),xCurrent,yCurrent,null);
+                xCurrent+=aumentoEnX;
+                cont++;
+            }
+            yCurrent+=aumentoEnY;
+            xCurrent=0;
+        }
+        g2d.dispose();
+        /* este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
+        try {
+            ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }
 }
