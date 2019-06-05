@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
@@ -8,7 +9,9 @@
 <AnchorPane id="AnchorPane" prefHeight="540.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoredes.controller.PantReceptorController">
    <children>
       <Separator layoutX="15.0" layoutY="59.0" prefWidth="970.0" />
-      <ImageView fitHeight="304.0" fitWidth="570.0" layoutX="15.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true" />
-      <JFXTextField fx:id="tf_puerto" labelFloat="true" layoutX="433.0" layoutY="14.0" promptText="Puerto" />
+      <ImageView fx:id="iv_imagen" fitHeight="442.0" fitWidth="970.0" layoutX="15.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true" />
+      <JFXTextField fx:id="tf_puerto" labelFloat="true" layoutX="646.0" layoutY="22.0" promptText="Puerto" />
+      <JFXButton fx:id="bot_Iniciar" layoutX="807.0" layoutY="22.0" onAction="#presionarBotIniciar" prefHeight="25.0" prefWidth="80.0" text="Iniciar" />
+      <JFXButton fx:id="bot_Detener" layoutX="905.0" layoutY="22.0" onAction="#presionarBotDetener" prefWidth="80.0" text="Detener" />
    </children>
 </AnchorPane>
