@@ -11,7 +11,10 @@ import com.jfoenix.controls.JFXTextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -77,7 +80,6 @@ public class PantEmisorController extends Controller implements Initializable {
     private JFXRadioButton rb_tamSegKB;
     @FXML
     private ToggleGroup tg_TamSegmento;
-    @FXML
     private JFXRadioButton rb_tamSegMB;
 
     private SimpleStringProperty cantFilasProperty = new SimpleStringProperty("1");
@@ -103,6 +105,13 @@ public class PantEmisorController extends Controller implements Initializable {
     private JFXTextField txfAgregarDireccionIP;
     @FXML
     private JFXButton btnAgregarDireccionIP;
+    
+    //elementos para el servicio cliente-servidor
+    Socket socket;
+    @FXML
+    private JFXTextField tf_ipDestino;
+    @FXML
+    private JFXTextField tf_puerto;
 
     /**
      * Initializes the controller class.
@@ -120,7 +129,6 @@ public class PantEmisorController extends Controller implements Initializable {
         rb_TCP.setUserData("TCP");
         rb_UDP.setUserData("UDP");
         rb_tamSegKB.setUserData("KB");
-        rb_tamSegMB.setUserData("MB");
         tf_ColumnasFragmentos.textProperty().addListener((observable, oldValue, newValue) -> {
             graficarImagen();
         });
@@ -128,6 +136,8 @@ public class PantEmisorController extends Controller implements Initializable {
             graficarImagen();
         });
         apDireccionesIP.setVisible(false);
+        tf_ipDestino.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
+        tf_puerto.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
     }
 
     @Override
@@ -249,8 +259,7 @@ public class PantEmisorController extends Controller implements Initializable {
     }
 
     private void intentarEnvio() {
-
-        CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
+        /*CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
         CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
         CapaTransporte capaTransporte2 = new CapaTransporte(capaTransporte1.getListaSegmentos(), null);
         try {
@@ -258,7 +267,7 @@ public class PantEmisorController extends Controller implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        */
     }
 
     @FXML
@@ -268,11 +277,22 @@ public class PantEmisorController extends Controller implements Initializable {
     @FXML
     private void presionarRbUDP(ActionEvent event) {
         apDireccionesIP.setVisible(true);
+        tf_ipDestino.setVisible(false);
     }
 
     @FXML
     private void presionarRbTCP(ActionEvent event) {
         apDireccionesIP.setVisible(false);
+        tf_ipDestino.setVisible(true);
     }
-
+    
+    private void establecerConexion(String ipDestino,Integer puerto){
+        try {
+            socket = new Socket(InetAddress.getByName(ipDestino),puerto);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

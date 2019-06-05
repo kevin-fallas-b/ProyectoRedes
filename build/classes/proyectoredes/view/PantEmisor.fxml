@@ -50,6 +50,7 @@
             <ToggleGroup fx:id="tg_TamSegmento" />
          </toggleGroup>
       </JFXRadioButton>
-      <JFXRadioButton fx:id="rb_tamSegMB" layoutX="877.0" layoutY="254.0" text="MB" toggleGroup="$tg_TamSegmento" />
+      <JFXTextField fx:id="tf_ipDestino" labelFloat="true" layoutX="693.0" layoutY="366.0" promptText="IP destino" />
+      <JFXTextField fx:id="tf_puerto" labelFloat="true" layoutX="693.0" layoutY="430.0" promptText="puerto" />
    </children>
 </AnchorPane>

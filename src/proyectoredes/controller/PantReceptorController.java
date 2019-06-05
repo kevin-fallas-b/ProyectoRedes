@@ -5,8 +5,10 @@
  */
 package proyectoredes.controller;
 
+import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 /**
@@ -15,6 +17,9 @@ import javafx.fxml.Initializable;
  * @author Kevin F
  */
 public class PantReceptorController extends Controller implements Initializable {
+
+    @FXML
+    private JFXTextField tf_puerto;
 
     /**
      * Initializes the controller class.
