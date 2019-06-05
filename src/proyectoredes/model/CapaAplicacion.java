@@ -36,6 +36,7 @@ public class CapaAplicacion {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         segmentarImagen();
+        pasarDatosASegmentos();
     }
 
     public CapaAplicacion(List<Datos> listaDatos) throws IOException {          //constructor utilizado para la recepcion
@@ -103,18 +104,18 @@ public class CapaAplicacion {
             posX = 0;
             posY += aumentoEnY;
         }
-        try {
-            pasarSegmentosADatos();
-        } catch (IOException ex) {
-            Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        pasarSegmentosADatos();
     }
 
-    private void pasarSegmentosADatos() throws IOException {
+    private void pasarSegmentosADatos() {
         listaDatos = new ArrayList();
         for (int i = 0; i < listaSegmentos.size(); i++) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(listaSegmentos.get(i), "jpg", baos);
+            try {
+                ImageIO.write(listaSegmentos.get(i), "jpg", baos);
+            } catch (IOException ex) {
+                Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
+            }
             byte[] bytes = baos.toByteArray();
 
             Datos dato = new Datos(i,bytes,cantFilas,cantColumnas);
@@ -124,13 +125,20 @@ public class CapaAplicacion {
     
     //estos dos metodos de abajo son para la recepcion 
 
-    private void pasarDatosASegmentos() throws IOException {
+    private void pasarDatosASegmentos()  {
         listaSegmentos = new ArrayList();
         for (int i = 0; i < listaDatos.size(); i++) {
             ByteArrayInputStream bis = new ByteArrayInputStream(listaDatos.get(i).getImagen());
-            BufferedImage bImage = ImageIO.read(bis);
-            ImageIO.write(bImage, "jpg", new File("output" + i + ".jpg"));
-            listaSegmentos.add(bImage);
+            BufferedImage bImage;
+            try {
+                bImage = ImageIO.read(bis);
+                ImageIO.write(bImage, "jpg", new File("output" + i + ".jpg"));
+                listaSegmentos.add(bImage);
+            } catch (IOException ex) {
+                Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
         }
         pasarSegmentosAImagen();
     }
@@ -161,11 +169,11 @@ public class CapaAplicacion {
             xCurrent=0;
         }
         g2d.dispose();
-        /* este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
+        // este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
         try {
             ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
 }
