@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,11 +58,10 @@ public class CapaTransporte {
         ListaDatos = new ArrayList();
         boolean bandera = true;
         int numDato = 0;
-        int numReconstrucion = 0;
         
         while(bandera){
             byte[] bytes = new byte[0];
-            
+            int numReconstrucion = 0;
             //
             //CONCATENA TODOS LOS DATOS DIVIDIDOS EN BYTES
             for(int i=0; i<ListaSegmentos.size();i++){
@@ -69,13 +69,16 @@ public class CapaTransporte {
                     if(ListaSegmentos.get(i).getNumReconstruccion()==numReconstrucion){
                         bytes = Concatenar(bytes, ListaSegmentos.get(i).getDatos());
                         ListaSegmentos.remove(i);
+                        numReconstrucion++;
                     }
                 }
             }
             //TERMINA DE CONCATENAR EN BYTES
             //
-            
-            ListaDatos.add(SerializationUtils.deserialize(bytes));
+            numDato++;
+            //System.out.println(Arrays.toString(bytes));
+            Datos datoaux = (Datos)SerializationUtils.deserialize(bytes);
+            ListaDatos.add(datoaux);
         }
     }
     
@@ -111,14 +114,16 @@ public class CapaTransporte {
             int tamanoActual = 0;
             Boolean bandera = true;
             if(bytes.length>0){
+                //System.out.println(bytes.length);
                 while(bandera){
                     int numReconstruccion = 0;
                     byte[] aux = new byte[tamano];
-                    for(int j=0; j<tamano||tamanoActual<bytes.length; j++){
+                    for(int j=0; j<tamano&&tamanoActual<bytes.length; j++){
                         aux[j] = bytes[tamanoActual];
                         tamanoActual++;
                     }
                     Segmento segmentoAux = new Segmento(aux, numReconstruccion, i);
+                    numReconstruccion++;
                     ListaSegmentos.add(segmentoAux);
                     if(tamanoActual==bytes.length){
                         bandera = false;

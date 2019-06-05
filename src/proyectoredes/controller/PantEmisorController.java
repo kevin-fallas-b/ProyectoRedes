@@ -259,7 +259,7 @@ public class PantEmisorController extends Controller implements Initializable {
     }
 
     private void intentarEnvio() {
-        /*CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
+        CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
         CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
         CapaTransporte capaTransporte2 = new CapaTransporte(capaTransporte1.getListaSegmentos(), null);
         try {
@@ -267,7 +267,7 @@ public class PantEmisorController extends Controller implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
+        
     }
 
     @FXML
