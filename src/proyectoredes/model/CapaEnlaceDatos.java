@@ -5,10 +5,31 @@
  */
 package proyectoredes.model;
 
+import java.util.List;
+
 /**
  *
  * @author Kevin F
  */
 public class CapaEnlaceDatos {
+    private List<Paquete> paquetesRecibidos;
+    private List<Trama> tramasListasParaEnvio;
+
+    public List<Paquete> getPaquetesRecibidos() {
+        return paquetesRecibidos;
+    }
+
+    public void setPaquetesRecibidos(List<Paquete> paquetesRecibidos) {
+        this.paquetesRecibidos = paquetesRecibidos;
+    }
+
+    public List<Trama> getTramasListasParaEnvio() {
+        return tramasListasParaEnvio;
+    }
+
+    public void setTramasListasParaEnvio(List<Trama> tramasListasParaEnvio) {
+        this.tramasListasParaEnvio = tramasListasParaEnvio;
+    }
+    
     
 }
