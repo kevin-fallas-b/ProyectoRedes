@@ -36,7 +36,6 @@ public class CapaAplicacion {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         segmentarImagen();
-        pasarDatosASegmentos();
     }
 
     public CapaAplicacion(List<Datos> listaDatos) throws IOException {          //constructor utilizado para la recepcion

@@ -10,10 +10,13 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -249,7 +252,13 @@ public class PantEmisorController extends Controller implements Initializable {
     private void intentarEnvio() {
 
         CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
-        //CapaTransporte capaTransporte = new CapaTransporte(capaAplicacion.getListaSegmentos(),(String)TG_TipoEnvio.getUserData(),Integer.valueOf(tamSegmentosProperty.getValue()));
+        CapaTransporte capaTransporte1 = new CapaTransporte("TCP",capaAplicacion.getListaDatos(), 100);
+        CapaTransporte capaTransporte2 = new CapaTransporte(capaTransporte1.getListaSegmentos(), null);        
+        try {
+            capaAplicacion = new CapaAplicacion(capaTransporte2.getListaDatos());
+        } catch (IOException ex) {
+            Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
