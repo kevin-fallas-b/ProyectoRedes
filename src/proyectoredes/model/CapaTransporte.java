@@ -65,12 +65,13 @@ public class CapaTransporte {
             Boolean bandera = true;
             if(bytes.length>0){
                 while(bandera){
+                    int numReconstruccion = 0;
                     byte[] aux = new byte[tamano];
                     for(int j=0; j<tamano||tamanoActual<bytes.length; j++){
                         aux[j] = bytes[tamanoActual];
                         tamanoActual++;
                     }
-                    Segmento segmentoAux = new Segmento(aux);
+                    Segmento segmentoAux = new Segmento(aux, numReconstruccion, i);
                     ListaSegmentos.add(segmentoAux);
                     if(tamanoActual==bytes.length){
                         bandera = false;

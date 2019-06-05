@@ -11,8 +11,38 @@ package proyectoredes.model;
  */
 public class Segmento {
     private byte []Datos;
+    private int numReconstruccion;
+    private int numSegmento;
     
-    public Segmento(byte []Datos){
+    public Segmento(byte []Datos, int numeconstruccion, int numSegmento){
+        this.Datos = Datos;
+        this.numReconstruccion = numReconstruccion;
+        this.numSegmento = numSegmento;
+    }
+
+    public byte[] getDatos() {
+        return Datos;
+    }
+
+    public void setDatos(byte[] Datos) {
         this.Datos = Datos;
     }
+
+    public int getNumReconstruccion() {
+        return numReconstruccion;
+    }
+
+    public void setNumReconstruccion(int numReconstruccion) {
+        this.numReconstruccion = numReconstruccion;
+    }
+
+    public int getNumSegmento() {
+        return numSegmento;
+    }
+
+    public void setNumSegmento(int numSegmento) {
+        this.numSegmento = numSegmento;
+    }
+    
+    
 }
