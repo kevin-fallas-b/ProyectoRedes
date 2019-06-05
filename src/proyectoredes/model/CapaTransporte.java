@@ -159,4 +159,46 @@ public class CapaTransporte {
     private void CrearDatagramas(){
         
     }
+
+    public String getTipoTransporte() {
+        return TipoTransporte;
+    }
+
+    public void setTipoTransporte(String TipoTransporte) {
+        this.TipoTransporte = TipoTransporte;
+    }
+
+    public List<Datos> getListaDatos() {
+        return ListaDatos;
+    }
+
+    public void setListaDatos(List<Datos> ListaDatos) {
+        this.ListaDatos = ListaDatos;
+    }
+
+    public List<Segmento> getListaSegmentos() {
+        return ListaSegmentos;
+    }
+
+    public void setListaSegmentos(List<Segmento> ListaSegmentos) {
+        this.ListaSegmentos = ListaSegmentos;
+    }
+
+    public List<Datagrama> getListaDatagramas() {
+        return ListaDatagramas;
+    }
+
+    public void setListaDatagramas(List<Datagrama> ListaDatagramas) {
+        this.ListaDatagramas = ListaDatagramas;
+    }
+
+    public int getKb() {
+        return kb;
+    }
+
+    public void setKb(int kb) {
+        this.kb = kb;
+    }
+    
+    
 }
