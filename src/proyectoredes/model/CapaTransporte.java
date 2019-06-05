@@ -23,7 +23,7 @@ public class CapaTransporte {
     private List<Datagrama> ListaDatagramas;
     private int kb;
     
-    public CapaTransporte(String TipoTransporte, ArrayList<Datos> ListaDatos, int kb){
+    public CapaTransporte(String TipoTransporte, List<Datos> ListaDatos, int kb){
         this.kb = kb;
         this.ListaDatos = ListaDatos;
         this.TipoTransporte = TipoTransporte;
@@ -33,6 +33,18 @@ public class CapaTransporte {
         }else if(TipoTransporte == "UDP"){
             CrearDatagramas();
         }
+    }
+    
+    public CapaTransporte(List<Segmento> ListaSegmentos){
+        
+    }
+    
+    private void ReconstruirSegmentos(){
+        
+    }
+    
+    private void ReconstruirDatagramas(){
+    
     }
     
     private void CrearSegmentos(){
