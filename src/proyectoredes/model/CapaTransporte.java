@@ -95,6 +95,7 @@ public class CapaTransporte {
         
         for(int i=0; i<ListaDatos.size(); i++){
             ListaSegmentos.add(new Segmento(SerializationUtils.serialize(ListaDatos.get(i)), 0, i));
+            System.out.println(ListaDatos.get(i).getImagen().length);
         }
         /*
         //
