@@ -57,7 +57,7 @@ public class Conexion extends Thread {
                     continuar=false;
                     PantReceptorController.armarImagen();
                 }
-                if (trama.getError()) {
+                if (trama.getError()==false) {
                     tramasRecibidas.add(trama);
                 }
 
