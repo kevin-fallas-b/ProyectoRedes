@@ -95,6 +95,7 @@ public class PantReceptorController extends Controller implements Initializable 
 
     private void empezarAEscuchar() throws IOException {
         serverSocket = new ServerSocket(puerto);
+        //serverSocket.setSoTimeout(30);
         esperarConexion();
 
     }
@@ -124,7 +125,7 @@ public class PantReceptorController extends Controller implements Initializable 
     private void detenerEscuchar() throws IOException {
         conexion.setContinuar(false);
         timer.cancel();
-        //serverSocket.close();
+        serverSocket.close();
     }
 
     private void ponerImagen(Image imagen){

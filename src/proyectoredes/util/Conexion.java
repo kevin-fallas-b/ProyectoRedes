@@ -46,6 +46,7 @@ public class Conexion extends Thread {
                     conexion = new Conexion(serverSocket.accept());
                     conexion.start();
                 }
+                System.out.println("Salio del while infinito");
                 serverSocket.close();
             } catch (SocketException ex) {
                 Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,7 +67,6 @@ public class Conexion extends Thread {
                 if (trama.getUltimo() == 1) {
                     continuar = false;
                     armarImagen();
-                    //PantReceptorController.armarImagen();
                 }
 
                 
@@ -77,6 +77,10 @@ public class Conexion extends Thread {
             }
         }
 
+    }
+    
+    public void cerrarForzozamente(){
+        
     }
     
     public void armarImagen() throws IOException {
