@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import proyectoredes.controller.PantReceptorController;
@@ -25,29 +26,41 @@ public class Conexion extends Thread {
 
     private Socket socket;
     private Boolean continuar = true;
-    
+
     public Conexion(Socket socket) {
         this.socket = socket;
     }
-    
+
     @Override
     public void run() {
         if (socket == null) {
-            while (continuar) {
-                Conexion conexion;
-                try {
+            try {
+                while (continuar) {
+                    Conexion conexion;
+
                     conexion = new Conexion(serverSocket.accept());
                     conexion.start();
-                } catch (IOException ex) {
-                    Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } catch (SocketException ex) {
+                Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException so) {
+
             }
+
         } else {
             try {
                 System.out.println("se conecto");
                 InputStream is = socket.getInputStream();
-                ObjectInputStream ois = new ObjectInputStream(is);                
-                tramasRecibidas.add((Trama)ois.readObject());
+                ObjectInputStream ois = new ObjectInputStream(is);
+                Trama trama = (Trama) ois.readObject();
+                if (trama.getUltimo()==1) {
+                    continuar=false;
+                    PantReceptorController.armarImagen();
+                }
+                if (trama.getError()) {
+                    tramasRecibidas.add(trama);
+                }
+
                 System.out.println("Se recibibio una trama");
             } catch (IOException ex) {
                 Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
@@ -65,6 +78,5 @@ public class Conexion extends Thread {
     public void setContinuar(Boolean continuar) {
         this.continuar = continuar;
     }
-    
-    
+
 }

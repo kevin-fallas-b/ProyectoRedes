@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,7 +43,7 @@ public class PantReceptorController extends Controller implements Initializable 
     @FXML
     private JFXButton bot_Detener;
     @FXML
-    private ImageView iv_imagen;
+    private static ImageView iv_imagen;
     public static ServerSocket serverSocket;
     private Socket socket;
     private Integer puerto;
@@ -96,28 +97,25 @@ public class PantReceptorController extends Controller implements Initializable 
     private void esperarConexion() throws IOException {
         conexion = new Conexion(null);
         conexion.start();
-        
+
     }
 
     private void detenerEscuchar() throws IOException {
         conexion.setContinuar(false);
-        //serverSocket.close();
-        armarImagen();
+        serverSocket.close();
+        //armarImagen();
     }
 
-    private void armarImagen() {
+    public static void armarImagen() throws IOException {
         //ordenar lista de tramas
-        tramasRecibidas = tramasRecibidas.stream().sorted((o1, o2)->o1.getNumTrama().
-                                   compareTo(o2.getNumTrama())).
-                                   collect(Collectors.toList());
-        
-        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(tramasRecibidas,"hola");
+        tramasRecibidas = tramasRecibidas.stream().sorted((o1, o2) -> o1.getNumTrama().
+                compareTo(o2.getNumTrama())).
+                collect(Collectors.toList());
+
+        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(tramasRecibidas, "hola");
         CapaRed capaRed = new CapaRed(capaEnlaceDatos.getListaPaquetes());
-        CapaTransporte capaTransporte = new CapaTransporte(capaRed.getListaSegmentos(),null);
-        try {
-            CapaAplicacion capaAplicacion = new CapaAplicacion(capaTransporte.getListaDatos());
-        } catch (IOException ex) {
-            Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        CapaTransporte capaTransporte = new CapaTransporte(capaRed.getListaSegmentos(), null);
+        CapaAplicacion capaAplicacion = new CapaAplicacion(capaTransporte.getListaDatos());
+        iv_imagen.setImage(SwingFXUtils.toFXImage(capaAplicacion.getImagenOriginal(), null ));
     }
 }
