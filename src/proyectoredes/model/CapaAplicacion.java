@@ -168,11 +168,12 @@ public class CapaAplicacion {
             xCurrent=0;
         }
         g2d.dispose();
+        imagenOriginal = imagenFinal;
         // este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
-        try {
+        /*try {
             ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 }
