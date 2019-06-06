@@ -30,8 +30,7 @@ import proyectoredes.model.Trama;
  */
 public class Conexion extends Thread {
 
-    private Socket socket;
-    private Boolean continuar = true;
+    private Socket socket; 
 
     public Conexion(Socket socket) {
         this.socket = socket;
@@ -41,7 +40,8 @@ public class Conexion extends Thread {
     public void run() {
         if (socket == null) {
             try {
-                while (continuar) {
+                while (PantReceptorController.continuar) {
+                    System.out.println("*******************************");
                     Conexion conexion;
                     conexion = new Conexion(serverSocket.accept());
                     conexion.start();
@@ -65,7 +65,8 @@ public class Conexion extends Thread {
                     System.out.println("Se recibibio una trama");
                 }
                 if (trama.getUltimo() == 1) {
-                    continuar = false;
+                    PantReceptorController.continuar = false;
+                    serverSocket.close();                           
                     armarImagen();
                 }
 
@@ -88,21 +89,12 @@ public class Conexion extends Thread {
         tramasRecibidas = tramasRecibidas.stream().sorted((o1, o2) -> o1.getNumTrama().
                 compareTo(o2.getNumTrama())).
                 collect(Collectors.toList());
-
         CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(tramasRecibidas, "hola");
         CapaRed capaRed = new CapaRed(capaEnlaceDatos.getListaPaquetes());
         CapaTransporte capaTransporte = new CapaTransporte(capaRed.getListaSegmentos(), null);
         CapaAplicacion capaAplicacion = new CapaAplicacion(capaTransporte.getListaDatos());    
         //System.out.println(capaAplicacion.getImagenOriginal());
         AppContext.getInstance().set("Imagen", capaAplicacion.getImagenOriginalEnImage());
-    }
-    
-    public Boolean getContinuar() {
-        return continuar;
-    }
-
-    public void setContinuar(Boolean continuar) {
-        this.continuar = continuar;
     }
 
 }

@@ -52,8 +52,9 @@ public class PantReceptorController extends Controller implements Initializable 
     private Socket socket;
     private Integer puerto;
     public static List<Trama> tramasRecibidas = new ArrayList();
+    public static Boolean continuar = true;
     private Conexion conexion;
-    private Timer timer;
+    public static Timer timer;
 
     /**
      * Initializes the controller class.
@@ -103,19 +104,20 @@ public class PantReceptorController extends Controller implements Initializable 
     private void esperarConexion() throws IOException {
         conexion = new Conexion(null);
         conexion.start();
-        timer = new Timer();
-        timer.schedule(timerTask,0,1000);
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(timerTask, 0, 1000);
+        }
+
     }
     private TimerTask timerTask = new TimerTask() {
         //espacio para declarar variables
         @Override
         public void run() {
-            Image imagen = (Image)AppContext.getInstance().get("Imagen");
-            System.out.println("Intento buscar imagen");
+            Image imagen = (Image) AppContext.getInstance().get("Imagen");
             if (imagen != null) {
                 Platform.runLater(() -> {
                     ponerImagen(imagen);
-                    timer.cancel();
                 });
             }
 
@@ -123,12 +125,10 @@ public class PantReceptorController extends Controller implements Initializable 
     };
 
     private void detenerEscuchar() throws IOException {
-        conexion.setContinuar(false);
-        timer.cancel();
         serverSocket.close();
     }
 
-    private void ponerImagen(Image imagen){
+    private void ponerImagen(Image imagen) {
         iv_imagen.setImage(imagen);
     }
 }

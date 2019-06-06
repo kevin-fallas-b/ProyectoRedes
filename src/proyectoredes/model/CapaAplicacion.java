@@ -112,11 +112,11 @@ public class CapaAplicacion {
         listaDatos = new ArrayList();
         for (int i = 0; i < listaSegmentos.size(); i++) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            /*try {
+            try{
                 ImageIO.write(listaSegmentos.get(i), "jpg", baos);
             } catch (IOException ex) {
                 Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            }
             byte[] bytes = baos.toByteArray();
 
             Datos dato = new Datos(i,bytes,cantFilas,cantColumnas);

@@ -55,7 +55,7 @@ public class CapaEnlaceDatos {
             Trama trama = new Trama(i, listaPaquetes.get(i), false,0);
             listaTramas.add(trama);
         }
-        listaTramas.get(listaTramas.size()-2).setUltimo(1);
+        listaTramas.get(listaTramas.size()-1).setUltimo(1);
         serializarTramas();
     }
 

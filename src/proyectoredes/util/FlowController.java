@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import proyectoredes.ProyectoRedes;
 import proyectoredes.controller.Controller;
+import proyectoredes.controller.PantReceptorController;
 //import sistematransporte.SistemaTransporte;
 //import sistematransporte.controller.Controller;
 //import sistematransporte.controller.PantPrincipalController;
@@ -93,6 +94,9 @@ public class FlowController {
             this.mainStage.getIcons().add(new Image("proyectoredes/resources/icon.png"));
             this.mainStage.setScene(new Scene(FXMLLoader.load(ProyectoRedes.class.getResource("view/PantPrincipal.fxml"), this.idioma)));
             this.mainStage.show();
+            this.mainStage.setOnCloseRequest((event) -> {
+                PantReceptorController.timer.cancel();
+            });
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
         }
