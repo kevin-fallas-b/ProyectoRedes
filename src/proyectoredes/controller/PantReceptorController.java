@@ -14,19 +14,23 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javafx.embed.swing.SwingFXUtils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import proyectoredes.model.CapaAplicacion;
 import proyectoredes.model.CapaEnlaceDatos;
 import proyectoredes.model.CapaRed;
 import proyectoredes.model.CapaTransporte;
 import proyectoredes.model.Trama;
+import proyectoredes.util.AppContext;
 import proyectoredes.util.Conexion;
 
 /**
@@ -43,12 +47,13 @@ public class PantReceptorController extends Controller implements Initializable 
     @FXML
     private JFXButton bot_Detener;
     @FXML
-    private static ImageView iv_imagen;
+    public ImageView iv_imagen;
     public static ServerSocket serverSocket;
     private Socket socket;
     private Integer puerto;
     public static List<Trama> tramasRecibidas = new ArrayList();
     private Conexion conexion;
+    private Timer timer;
 
     /**
      * Initializes the controller class.
@@ -97,25 +102,32 @@ public class PantReceptorController extends Controller implements Initializable 
     private void esperarConexion() throws IOException {
         conexion = new Conexion(null);
         conexion.start();
-
+        timer = new Timer();
+        timer.schedule(timerTask,0,1000);
     }
+    private TimerTask timerTask = new TimerTask() {
+        //espacio para declarar variables
+        @Override
+        public void run() {
+            Image imagen = (Image)AppContext.getInstance().get("Imagen");
+            System.out.println("Intento buscar imagen");
+            if (imagen != null) {
+                Platform.runLater(() -> {
+                    ponerImagen(imagen);
+                    timer.cancel();
+                });
+            }
+
+        }
+    };
 
     private void detenerEscuchar() throws IOException {
         conexion.setContinuar(false);
-        serverSocket.close();
-        //armarImagen();
+        timer.cancel();
+        //serverSocket.close();
     }
 
-    public static void armarImagen() throws IOException {
-        //ordenar lista de tramas
-        tramasRecibidas = tramasRecibidas.stream().sorted((o1, o2) -> o1.getNumTrama().
-                compareTo(o2.getNumTrama())).
-                collect(Collectors.toList());
-
-        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(tramasRecibidas, "hola");
-        CapaRed capaRed = new CapaRed(capaEnlaceDatos.getListaPaquetes());
-        CapaTransporte capaTransporte = new CapaTransporte(capaRed.getListaSegmentos(), null);
-        CapaAplicacion capaAplicacion = new CapaAplicacion(capaTransporte.getListaDatos());
-        iv_imagen.setImage(SwingFXUtils.toFXImage(capaAplicacion.getImagenOriginal(), null ));
+    private void ponerImagen(Image imagen){
+        iv_imagen.setImage(imagen);
     }
 }

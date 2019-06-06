@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 
 /**
@@ -110,11 +112,11 @@ public class CapaAplicacion {
         listaDatos = new ArrayList();
         for (int i = 0; i < listaSegmentos.size(); i++) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
+            /*try {
                 ImageIO.write(listaSegmentos.get(i), "jpg", baos);
             } catch (IOException ex) {
                 Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }*/
             byte[] bytes = baos.toByteArray();
 
             Datos dato = new Datos(i,bytes,cantFilas,cantColumnas);
@@ -154,8 +156,9 @@ public class CapaAplicacion {
         Integer alturaFinal = listaSegmentos.get(0).getHeight()*cantFilas;
         Integer AnchoFinal = listaSegmentos.get(0).getWidth()*cantColumnas;
         //creamos una imagen en blanco con las dimensiones correctas donde vamos a agregar las imagenes pequenas
-        BufferedImage imagenFinal = new BufferedImage(AnchoFinal, alturaFinal, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = imagenFinal.createGraphics();
+        //BufferedImage imagenFinal = new BufferedImage(AnchoFinal, alturaFinal, BufferedImage.TYPE_INT_RGB);
+         imagenOriginal = new BufferedImage(AnchoFinal, alturaFinal, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = imagenOriginal.createGraphics();
         
         //agregamos los segmentos de imagen a la imagen final
         for(int i=0;i<cantFilas;i++){
@@ -167,13 +170,18 @@ public class CapaAplicacion {
             yCurrent+=aumentoEnY;
             xCurrent=0;
         }
+        
         g2d.dispose();
-        imagenOriginal = imagenFinal;
+        //imagenOriginal = imagenFinal;
         // este codigo que esta comentado es para probar que se esta armando bien la foto, la guarda en archivo
-        /*try {
-            ImageIO.write(imagenFinal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
+        try {
+            ImageIO.write(imagenOriginal, "jpg", new File("C:\\Users\\Kevin F\\Pictures\\concat.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(CapaAplicacion.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
+    }
+    
+    public Image getImagenOriginalEnImage(){
+        return SwingFXUtils.toFXImage(imagenOriginal, null );
     }
 }

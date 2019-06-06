@@ -13,9 +13,15 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import proyectoredes.controller.PantReceptorController;
 import static proyectoredes.controller.PantReceptorController.tramasRecibidas;
 import static proyectoredes.controller.PantReceptorController.serverSocket;
+import static proyectoredes.controller.PantReceptorController.tramasRecibidas;
+import proyectoredes.model.CapaAplicacion;
+import proyectoredes.model.CapaEnlaceDatos;
+import proyectoredes.model.CapaRed;
+import proyectoredes.model.CapaTransporte;
 import proyectoredes.model.Trama;
 
 /**
@@ -37,10 +43,10 @@ public class Conexion extends Thread {
             try {
                 while (continuar) {
                     Conexion conexion;
-
                     conexion = new Conexion(serverSocket.accept());
                     conexion.start();
                 }
+                serverSocket.close();
             } catch (SocketException ex) {
                 Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException so) {
@@ -53,15 +59,17 @@ public class Conexion extends Thread {
                 InputStream is = socket.getInputStream();
                 ObjectInputStream ois = new ObjectInputStream(is);
                 Trama trama = (Trama) ois.readObject();
-                if (trama.getUltimo()==1) {
-                    continuar=false;
-                    PantReceptorController.armarImagen();
-                }
-                if (trama.getError()==false) {
+                if (trama.getError() == false) {
                     tramasRecibidas.add(trama);
+                    System.out.println("Se recibibio una trama");
+                }
+                if (trama.getUltimo() == 1) {
+                    continuar = false;
+                    armarImagen();
+                    //PantReceptorController.armarImagen();
                 }
 
-                System.out.println("Se recibibio una trama");
+                
             } catch (IOException ex) {
                 Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -70,7 +78,21 @@ public class Conexion extends Thread {
         }
 
     }
+    
+    public void armarImagen() throws IOException {
+        //ordenar lista de tramas
+        tramasRecibidas = tramasRecibidas.stream().sorted((o1, o2) -> o1.getNumTrama().
+                compareTo(o2.getNumTrama())).
+                collect(Collectors.toList());
 
+        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(tramasRecibidas, "hola");
+        CapaRed capaRed = new CapaRed(capaEnlaceDatos.getListaPaquetes());
+        CapaTransporte capaTransporte = new CapaTransporte(capaRed.getListaSegmentos(), null);
+        CapaAplicacion capaAplicacion = new CapaAplicacion(capaTransporte.getListaDatos());    
+        //System.out.println(capaAplicacion.getImagenOriginal());
+        AppContext.getInstance().set("Imagen", capaAplicacion.getImagenOriginalEnImage());
+    }
+    
     public Boolean getContinuar() {
         return continuar;
     }
