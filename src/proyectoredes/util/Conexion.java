@@ -64,26 +64,30 @@ public class Conexion extends Thread {
                 InputStream is = socket.getInputStream();
                 ObjectInputStream ois = new ObjectInputStream(is);
                 Trama trama = (Trama) ois.readObject();
-                if (trama.getError() == false) {
-                    tramasRecibidas.add(trama);
-                    System.out.println("Se recibibio una trama");
-                    PrintWriter pr = new PrintWriter(socket.getOutputStream());
-                    pr.write(trama.getNumTrama().toString());
-                    pr.flush();
-                    //OutputStream os = socket.getOutputStream();
-                    //os.write(trama.getNumTrama());
-                    //OutputStreamWriter osw = new OutputStreamWriter(os);
-                    //BufferedWriter bw = new BufferedWriter(osw);
-                    //bw.write(trama.getNumTrama().toString());
-                    //bw.flush();
-                    //os.flush();
-                    //System.out.println(socket.getInetAddress());
-                    System.out.println("Trama num " + trama.getNumTrama() + " envio ACK");
-                } else {
-                    //trama contiene error
+                //if (trama.getError() == false) {
+                tramasRecibidas.add(trama);
+                System.out.println("Se recibibio una trama");
+                if (trama.getError()) {
                     Label label = new Label("Trama numero " + trama.getNumTrama());
                     FlowController.errores.add(label);
                 }
+                PrintWriter pr = new PrintWriter(socket.getOutputStream());
+                pr.write(trama.getNumTrama().toString());
+                pr.flush();
+                //OutputStream os = socket.getOutputStream();
+                //os.write(trama.getNumTrama());
+                //OutputStreamWriter osw = new OutputStreamWriter(os);
+                //BufferedWriter bw = new BufferedWriter(osw);
+                //bw.write(trama.getNumTrama().toString());
+                //bw.flush();
+                //os.flush();
+                //System.out.println(socket.getInetAddress());
+                System.out.println("Trama num " + trama.getNumTrama() + " envio ACK");
+                /*} else {
+                    //trama contiene error
+                    Label label = new Label("Trama numero " + trama.getNumTrama());
+                    FlowController.errores.add(label);
+                }*/
                 if (trama.getUltimo() == 1) {
                     PantReceptorController.continuar = false;
                     serverSocket.close();
