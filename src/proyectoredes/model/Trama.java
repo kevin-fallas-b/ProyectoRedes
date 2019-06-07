@@ -17,12 +17,14 @@ public class Trama implements Serializable{
     private Paquete paquete;
     private Boolean error;
     private Integer ultimo;
+    private Boolean enviarACK;
 
-    public Trama(Integer numTrama, Paquete paquete, Boolean error, Integer ultimo) {
+    public Trama(Integer numTrama, Paquete paquete, Boolean error, Integer ultimo, Boolean enviarACK) {
         this.numTrama = numTrama;
         this.paquete = paquete;
         this.error = error;
         this.ultimo = ultimo;
+        this.enviarACK = enviarACK;
     }
 
     public Integer getNumTrama() {
@@ -56,6 +58,12 @@ public class Trama implements Serializable{
     public void setUltimo(Integer ultimo) {
         this.ultimo = ultimo;
     }
-    
-    
+
+    public Boolean getEnviarACK() {
+        return enviarACK;
+    }
+
+    public void setEnviarACK(Boolean enviarACK) {
+        this.enviarACK = enviarACK;
+    }
 }

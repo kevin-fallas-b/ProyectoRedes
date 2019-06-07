@@ -52,7 +52,7 @@ public class CapaEnlaceDatos {
 
     private void pasarPaquetesATramas() {
         for (int i = 0; i < listaPaquetes.size(); i++) {
-            Trama trama = new Trama(i, listaPaquetes.get(i), false,0);
+            Trama trama = new Trama(i, listaPaquetes.get(i), false,0,true);
             listaTramas.add(trama);
         }
         listaTramas.get(listaTramas.size()-1).setUltimo(1);

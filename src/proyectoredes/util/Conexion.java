@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.scene.control.Label;
 import proyectoredes.controller.PantReceptorController;
 import static proyectoredes.controller.PantReceptorController.tramasRecibidas;
 import static proyectoredes.controller.PantReceptorController.serverSocket;
@@ -62,6 +63,10 @@ public class Conexion extends Thread {
                 if (trama.getError() == false) {
                     tramasRecibidas.add(trama);
                     System.out.println("Se recibibio una trama");
+                }else{
+                    //trama contiene error
+                    Label label = new Label("Trama numero "+trama.getNumTrama());
+                    FlowController.errores.add(label);
                 }
                 if (trama.getUltimo() == 1) {
                     PantReceptorController.continuar = false;

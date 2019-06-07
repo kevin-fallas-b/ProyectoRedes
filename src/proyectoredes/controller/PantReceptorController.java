@@ -22,11 +22,15 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import proyectoredes.model.Trama;
 import proyectoredes.util.AppContext;
 import proyectoredes.util.Conexion;
+import proyectoredes.util.FlowController;
+import proyectoredes.util.Formato;
 
 /**
  * FXML Controller class
@@ -50,6 +54,10 @@ public class PantReceptorController extends Controller implements Initializable 
     public static Boolean continuar = true;
     private Conexion conexion;
     public static Timer timer = null;
+    @FXML
+    private Label lbl_Errores;
+    @FXML
+    public VBox vb_Errores;
 
     /**
      * Initializes the controller class.
@@ -57,6 +65,7 @@ public class PantReceptorController extends Controller implements Initializable 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         bot_Detener.setDisable(true);
+        tf_puerto.textFormatterProperty().set(Formato.getInstance().integerFormat());
     }
 
     @Override
@@ -66,15 +75,23 @@ public class PantReceptorController extends Controller implements Initializable 
 
     @FXML
     private void presionarBotIniciar(ActionEvent event) {
-        puerto = Integer.parseInt(tf_puerto.getText());
-        try {
-            empezarAEscuchar();
-        } catch (IOException ex) {
-            Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
+        vb_Errores.getChildren().removeAll();
+        puerto = null;
+        if (!tf_puerto.getText().isEmpty()) {
+            puerto = Integer.parseInt(tf_puerto.getText());
         }
-        bot_Iniciar.setDisable(true);
-        bot_Detener.setDisable(false);
-        tf_puerto.setDisable(true);
+        
+        if (puerto != null) {
+            try {
+                empezarAEscuchar();
+            } catch (IOException ex) {
+                Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            bot_Iniciar.setDisable(true);
+            bot_Detener.setDisable(false);
+            tf_puerto.setDisable(true);
+        }
+
     }
 
     @FXML
@@ -94,7 +111,7 @@ public class PantReceptorController extends Controller implements Initializable 
 
     private void empezarAEscuchar() throws IOException {
         serverSocket = new ServerSocket(puerto);
-        continuar=true;
+        continuar = true;
         //serverSocket.setSoTimeout(30);
         esperarConexion();
 
@@ -119,6 +136,14 @@ public class PantReceptorController extends Controller implements Initializable 
             if (imagen != null) {
                 Platform.runLater(() -> {
                     ponerImagen(imagen);
+                });
+            }
+            if(!FlowController.errores.isEmpty()){
+                Platform.runLater(() -> {
+                    for(int i=0;i<FlowController.errores.size();i++){
+                        vb_Errores.getChildren().add(FlowController.errores.get(0));
+                        FlowController.errores.remove(0);
+                    }
                 });
             }
 
