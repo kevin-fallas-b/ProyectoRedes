@@ -9,11 +9,17 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -31,6 +37,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -120,6 +127,8 @@ public class PantEmisorController extends Controller implements Initializable {
     @FXML
     private JFXTextField tf_puerto;
     private ObservableList<String> ips;
+    @FXML
+    private TextField tf_errores;
 
     /**
      * Initializes the controller class.
@@ -136,6 +145,7 @@ public class PantEmisorController extends Controller implements Initializable {
         tf_ColumnasFragmentos.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
         tf_ColumnasFragmentos.textProperty().bindBidirectional(cantColumnasProperty);
         tf_FilasFragmentos.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
+        tf_errores.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
         tf_FilasFragmentos.textProperty().bindBidirectional(cantFilasProperty);
         tf_TamSegmento.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
         tf_TamSegmento.textProperty().bindBidirectional(tamSegmentosProperty);
@@ -151,7 +161,6 @@ public class PantEmisorController extends Controller implements Initializable {
             graficarImagen();
         });
         apDireccionesIP.setVisible(false);
-        tf_ipDestino.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
         tf_puerto.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
     }
 
@@ -278,23 +287,32 @@ public class PantEmisorController extends Controller implements Initializable {
             CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
             CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
             List<String> destinos = new ArrayList();
-            for(int i=0; i<ips.size(); i++){
-                destinos.add(ips.get(i));
+            if(rb_UDP.isSelected()){
+                for(int i=0; i<ips.size(); i++){
+                    destinos.add(ips.get(i));
+                }
+            }else{
+                destinos.add(tf_ipDestino.getText());
             }
             CapaRed capaRed = new CapaRed(capaTransporte1.getListaSegmentos(), InetAddress.getLocalHost(),destinos);
             List<List<Paquete>> lista2 = new ArrayList();
-            CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(0));
             if(!tf_puerto.getText().isEmpty()){
                 int puerto = Integer.parseInt(tf_puerto.getText());
-                
                 try {
-                    for(int i=0; i<capaEnlaceDatos.getTramasEnBytes().size(); i++){
-                        Socket socket = new Socket("192.168.1.9", puerto);
-                        OutputStream os = socket.getOutputStream();
-                        os.write(capaEnlaceDatos.getTramasEnBytes().get(i));
-                        os.flush();
-                        System.out.println("Trama numero "+i+" enviada! Peso: "+capaEnlaceDatos.getTramasEnBytes().get(i).length);
-                        socket.close();
+                    for(int k=0; k<capaRed.getListaPaquetes().size(); k++){
+                        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(k), Integer.parseInt(tf_errores.getText()));
+                        
+                        for(int i=0; i<capaEnlaceDatos.getTramasEnBytes().size(); i++){
+                            boolean bandera = true;
+                            //while(bandera){
+                                Socket socket = new Socket(capaEnlaceDatos.getListaPaquetes().get(i).getIpDestino(), puerto);
+                                OutputStream os = socket.getOutputStream();
+                                os.write(capaEnlaceDatos.getTramasEnBytes().get(i));
+                                os.flush();
+                                System.out.println("Trama numero "+i+" enviada a"+capaEnlaceDatos.getListaPaquetes().get(i).getIpDestino()+"! Peso: "+capaEnlaceDatos.getTramasEnBytes().get(i).length);    
+                                socket.close();
+                            //}
+                        }
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
