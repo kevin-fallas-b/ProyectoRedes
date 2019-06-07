@@ -296,11 +296,18 @@ public class PantEmisorController extends Controller implements Initializable {
             }
             CapaRed capaRed = new CapaRed(capaTransporte1.getListaSegmentos(), InetAddress.getLocalHost(),destinos);
             List<List<Paquete>> lista2 = new ArrayList();
+            int error;
+            if(tf_errores.getText().isEmpty()){
+                error=0;
+            }else{
+                error=Integer.parseInt(tf_errores.getText());
+            }
+            
             if(!tf_puerto.getText().isEmpty()){
                 int puerto = Integer.parseInt(tf_puerto.getText());
                 try {
                     for(int k=0; k<capaRed.getListaPaquetes().size(); k++){
-                        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(k), Integer.parseInt(tf_errores.getText()));
+                        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(k), error);
                         
                         for(int i=0; i<capaEnlaceDatos.getTramasEnBytes().size(); i++){
                             boolean bandera = true;
