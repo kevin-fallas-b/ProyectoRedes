@@ -95,16 +95,20 @@ public class FlowController {
             this.mainStage.setScene(new Scene(FXMLLoader.load(ProyectoRedes.class.getResource("view/PantPrincipal.fxml"), this.idioma)));
             this.mainStage.show();
             this.mainStage.setOnCloseRequest((event) -> {
-                PantReceptorController.timer.cancel();
+                if (PantReceptorController.timer != null) {
+                    PantReceptorController.timer.cancel();
+                }
+
             });
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
         }
     }
 
-    public Stage getMain(){
+    public Stage getMain() {
         return this.mainStage;
     }
+
     public void goView(String viewName) {
         goView(viewName, "Center", null);
     }
@@ -220,8 +224,8 @@ public class FlowController {
         stage.setScene(sceneToGo);
         stage.show();
     }
-    
-    public void goViewSubScene(String scene){
-        
+
+    public void goViewSubScene(String scene) {
+
     }
 }

@@ -54,7 +54,7 @@ public class PantReceptorController extends Controller implements Initializable 
     public static List<Trama> tramasRecibidas = new ArrayList();
     public static Boolean continuar = true;
     private Conexion conexion;
-    public static Timer timer;
+    public static Timer timer=null;
 
     /**
      * Initializes the controller class.
