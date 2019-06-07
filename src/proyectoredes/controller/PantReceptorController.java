@@ -18,17 +18,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import proyectoredes.model.CapaAplicacion;
-import proyectoredes.model.CapaEnlaceDatos;
-import proyectoredes.model.CapaRed;
-import proyectoredes.model.CapaTransporte;
 import proyectoredes.model.Trama;
 import proyectoredes.util.AppContext;
 import proyectoredes.util.Conexion;
@@ -54,7 +49,7 @@ public class PantReceptorController extends Controller implements Initializable 
     public static List<Trama> tramasRecibidas = new ArrayList();
     public static Boolean continuar = true;
     private Conexion conexion;
-    public static Timer timer=null;
+    public static Timer timer = null;
 
     /**
      * Initializes the controller class.
@@ -84,10 +79,13 @@ public class PantReceptorController extends Controller implements Initializable 
 
     @FXML
     private void presionarBotDetener(ActionEvent event) {
-        try {
-            detenerEscuchar();
-        } catch (IOException ex) {
-            Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
+        if (!serverSocket.isClosed()) {
+            try {
+                System.out.println("Se entro en detener");
+                detenerEscuchar();
+            } catch (IOException ex) {
+                Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         bot_Iniciar.setDisable(false);
         bot_Detener.setDisable(true);
@@ -96,6 +94,7 @@ public class PantReceptorController extends Controller implements Initializable 
 
     private void empezarAEscuchar() throws IOException {
         serverSocket = new ServerSocket(puerto);
+        continuar=true;
         //serverSocket.setSoTimeout(30);
         esperarConexion();
 
@@ -104,6 +103,7 @@ public class PantReceptorController extends Controller implements Initializable 
     private void esperarConexion() throws IOException {
         conexion = new Conexion(null);
         conexion.start();
+        tramasRecibidas = new ArrayList();
         if (timer == null) {
             timer = new Timer();
             timer.schedule(timerTask, 0, 1000);
@@ -115,6 +115,7 @@ public class PantReceptorController extends Controller implements Initializable 
         @Override
         public void run() {
             Image imagen = (Image) AppContext.getInstance().get("Imagen");
+            AppContext.getInstance().delete("Imagen");
             if (imagen != null) {
                 Platform.runLater(() -> {
                     ponerImagen(imagen);
@@ -130,5 +131,8 @@ public class PantReceptorController extends Controller implements Initializable 
 
     private void ponerImagen(Image imagen) {
         iv_imagen.setImage(imagen);
+        bot_Detener.setDisable(true);
+        bot_Iniciar.setDisable(false);
+        tf_puerto.setDisable(false);
     }
 }
