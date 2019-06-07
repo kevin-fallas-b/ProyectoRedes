@@ -6,14 +6,15 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap_PantEmisor" maxHeight="540.0" maxWidth="1000.0" minHeight="540.0" minWidth="1000.0" prefHeight="540.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoredes.controller.PantEmisorController">
+<AnchorPane id="AnchorPane" fx:id="ap_PantEmisor" maxHeight="540.0" maxWidth="1000.0" minHeight="540.0" minWidth="1000.0" prefHeight="540.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoredes.controller.PantEmisorController">
    <children>
-      <AnchorPane fx:id="apDireccionesIP" layoutX="511.0" layoutY="327.0" prefHeight="200.0" prefWidth="399.0">
+      <AnchorPane fx:id="apDireccionesIP" layoutX="520.0" layoutY="327.0" prefHeight="200.0" prefWidth="399.0">
          <children>
             <TableView fx:id="TbDireccionesAEnviar" prefHeight="200.0" prefWidth="146.0">
               <columns>
@@ -50,7 +51,8 @@
             <ToggleGroup fx:id="tg_TamSegmento" />
          </toggleGroup>
       </JFXRadioButton>
-      <JFXTextField fx:id="tf_ipDestino" labelFloat="true" layoutX="693.0" layoutY="366.0" promptText="IP destino" />
-      <JFXTextField fx:id="tf_puerto" labelFloat="true" layoutX="693.0" layoutY="430.0" promptText="puerto" />
+      <JFXTextField fx:id="tf_ipDestino" labelFloat="true" layoutX="693.0" layoutY="366.0" promptText="IP destino" text="192.168.1.9" />
+      <JFXTextField fx:id="tf_puerto" labelFloat="true" layoutX="693.0" layoutY="430.0" promptText="puerto" text="13000" />
+      <TextField fx:id="tf_errores" layoutX="520.0" layoutY="249.0" prefHeight="31.0" prefWidth="124.0" promptText="Errores" />
    </children>
 </AnchorPane>
