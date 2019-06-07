@@ -24,10 +24,10 @@ public class CapaRed {
     private List<InetAddress> ipsDestinos = new ArrayList();
 
     //constructor para la hora de envio
-    public CapaRed(List<Segmento> segmentos, String ipOrigen, List<String> ipsDestinos) {
+    public CapaRed(List<Segmento> segmentos, InetAddress ipOrigen, List<String> ipsDestinos) {
         this.listaSegmentos = segmentos;
         try {
-            this.ipOrigen = InetAddress.getByName(ipOrigen);
+            this.ipOrigen = ipOrigen;
             for (int i = 0; i < ipsDestinos.size(); i++) {
                 this.ipsDestinos.add(InetAddress.getByName(ipsDestinos.get(i)));
             }

@@ -22,10 +22,13 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
@@ -104,7 +107,7 @@ public class PantEmisorController extends Controller implements Initializable {
     @FXML
     private TableView<String> TbDireccionesAEnviar;
     @FXML
-    private TableColumn<String, ?> tcDireccionesIP;
+    private TableColumn<String, String> tcDireccionesIP;
     @FXML
     private JFXTextField txfAgregarDireccionIP;
     @FXML
@@ -116,12 +119,20 @@ public class PantEmisorController extends Controller implements Initializable {
     private JFXTextField tf_ipDestino;
     @FXML
     private JFXTextField tf_puerto;
+    private ObservableList<String> ips;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        tcDireccionesIP.setCellValueFactory((param) -> 
+                new SimpleStringProperty(param.getValue()));
+        
+        ips = FXCollections.observableArrayList();
+        TbDireccionesAEnviar.setItems(ips);
+        
         tf_ColumnasFragmentos.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
         tf_ColumnasFragmentos.textProperty().bindBidirectional(cantColumnasProperty);
         tf_FilasFragmentos.textFormatterProperty().setValue(Formato.getInstance().integerFormat());
@@ -263,30 +274,43 @@ public class PantEmisorController extends Controller implements Initializable {
     }
 
     private void intentarEnvio() {
-        CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
-        CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
-        List<String> destinos = new ArrayList();
-        destinos.add("192.168.1.1");
-        CapaRed capaRed = new CapaRed(capaTransporte1.getListaSegmentos(), "192.168.1.12",destinos);
-        List<List<Paquete>> lista2 = new ArrayList();
-        CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(0));
-        
         try {
-            for(int i=0; i<capaEnlaceDatos.getTramasEnBytes().size(); i++){
-                Socket socket = new Socket("192.168.1.9", 13000);
-                OutputStream os = socket.getOutputStream();
-                os.write(capaEnlaceDatos.getTramasEnBytes().get(i));
-                os.flush();
-                System.out.println("Trama numero "+i+" enviada!");
-                socket.close();
+            CapaAplicacion capaAplicacion = new CapaAplicacion(Integer.parseInt(cantFilasProperty.getValue()), Integer.parseInt(cantColumnasProperty.getValue()), imagenEnFile);
+            CapaTransporte capaTransporte1 = new CapaTransporte("TCP", capaAplicacion.getListaDatos(), 100);
+            List<String> destinos = new ArrayList();
+            for(int i=0; i<ips.size(); i++){
+                destinos.add(ips.get(i));
             }
-        } catch (IOException ex) {
+            CapaRed capaRed = new CapaRed(capaTransporte1.getListaSegmentos(), InetAddress.getLocalHost(),destinos);
+            List<List<Paquete>> lista2 = new ArrayList();
+            CapaEnlaceDatos capaEnlaceDatos = new CapaEnlaceDatos(capaRed.getListaPaquetes().get(0));
+            if(!tf_puerto.getText().isEmpty()){
+                int puerto = Integer.parseInt(tf_puerto.getText());
+                
+                try {
+                    for(int i=0; i<capaEnlaceDatos.getTramasEnBytes().size(); i++){
+                        Socket socket = new Socket("192.168.1.9", puerto);
+                        OutputStream os = socket.getOutputStream();
+                        os.write(capaEnlaceDatos.getTramasEnBytes().get(i));
+                        os.flush();
+                        System.out.println("Trama numero "+i+" enviada! Peso: "+capaEnlaceDatos.getTramasEnBytes().get(i).length);
+                        socket.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Error", FlowController.getInstance().getMain().getOwner(), "Debe definir un puerto.");
+            }
+        } catch (UnknownHostException ex) {
             Logger.getLogger(PantEmisorController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @FXML
     private void presionarAgregarDireccionIP(ActionEvent event) {
+        ips.add(txfAgregarDireccionIP.getText());
+        System.out.println(txfAgregarDireccionIP.getText());
     }
 
     @FXML
