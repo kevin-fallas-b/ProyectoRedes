@@ -98,7 +98,6 @@ public class PantReceptorController extends Controller implements Initializable 
     private void presionarBotDetener(ActionEvent event) {
         if (!serverSocket.isClosed()) {
             try {
-                System.out.println("Se entro en detener");
                 detenerEscuchar();
             } catch (IOException ex) {
                 Logger.getLogger(PantReceptorController.class.getName()).log(Level.SEVERE, null, ex);

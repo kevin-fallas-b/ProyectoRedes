@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -101,6 +102,13 @@ public class FlowController {
             this.mainStage.setOnCloseRequest((event) -> {
                 if (PantReceptorController.timer != null) {
                     PantReceptorController.timer.cancel();
+                    if(!PantReceptorController.serverSocket.isClosed()){
+                        try {
+                            PantReceptorController.serverSocket.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 }
 
             });
